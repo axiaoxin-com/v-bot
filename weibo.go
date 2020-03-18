@@ -26,6 +26,12 @@ import (
 	"github.com/pkg/errors"
 )
 
+// UserAgents ua list
+var UserAgents []string = []string{
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
+}
+
 // Weibo 定义各种微博相关方法
 type Weibo struct {
 	client      *http.Client
@@ -34,6 +40,7 @@ type Weibo struct {
 	redirecturi string
 	username    string
 	passwd      string
+	userAgent   string
 }
 
 // MobileLoginResp 移动登录返回结构
@@ -91,7 +98,14 @@ func NewWeibo(appkey, appsecret, username, passwd, redirecturi string) *Weibo {
 		redirecturi: redirecturi,
 		username:    username,
 		passwd:      passwd,
+		userAgent:   randUA(),
 	}
+}
+
+// 随机选一个ua
+func randUA() string {
+	mathRand.Seed(time.Now().Unix())
+	return UserAgents[mathRand.Intn(len(UserAgents))]
 }
 
 // MobileLogin 移动端登录微博
@@ -118,7 +132,7 @@ func (w *Weibo) MobileLogin() error {
 	if err != nil {
 		return errors.Wrap(err, "weibo MobileLogin NewRequest error")
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36")
+	req.Header.Set("User-Agent", w.userAgent)
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Accept-Encoding", "deflate, br") // no gzip
 	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
@@ -168,7 +182,7 @@ func (w *Weibo) PCLogin() error {
 		"_":        {strconv.FormatInt(time.Now().UnixNano()/1e6, 10)},
 	}
 	req.URL.RawQuery = params.Encode()
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")
+	req.Header.Set("User-Agent", w.userAgent)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := w.client.Do(req)
 	if err != nil {
@@ -224,7 +238,7 @@ func (w *Weibo) PCLogin() error {
 	if err != nil {
 		return errors.Wrap(err, "weibo PCLogin NewRequest ssologin error")
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")
+	req.Header.Set("User-Agent", w.userAgent)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err = w.client.Do(req)
 	if err != nil {
@@ -260,7 +274,7 @@ func (w *Weibo) loginSucceed(resp *SsoLoginResp) error {
 	if err != nil {
 		return errors.Wrap(err, "weibo loginSucceed NewRequest loginURL error")
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")
+	req.Header.Set("User-Agent", w.userAgent)
 	res, err := w.client.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "weibo loginSucceed Do loginURL error")
@@ -279,7 +293,7 @@ func (w *Weibo) loginSucceed(resp *SsoLoginResp) error {
 	uid := result[0][1]
 	homeURL := fmt.Sprintf("https://weibo.com/u/%s/home", uid)
 	req, err = http.NewRequest("GET", homeURL, nil)
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")
+	req.Header.Set("User-Agent", w.userAgent)
 	res, err = w.client.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "weibo loginSucceed Do homeURL error")
