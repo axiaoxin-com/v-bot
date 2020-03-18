@@ -85,7 +85,7 @@ type TokenResp struct {
 	IsRealName  string `json:"isRealName"`
 }
 
-// NewWeibo 创建Weibo示例
+// NewWeibo 创建Weibo实例
 func NewWeibo(appkey, appsecret, username, passwd, redirecturi string) *Weibo {
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{

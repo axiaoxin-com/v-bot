@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/robfig/cron"
 	"github.com/spf13/viper"
 )
@@ -11,10 +12,27 @@ import (
 var clock *Clock
 var err error
 
-func ringJob() {
+func initClock() error {
+	appkey := viper.GetString("weibo.app_key")
+	appsecret := viper.GetString("weibo.app_secret")
+	username := viper.GetString("weibo.username")
+	passwd := viper.GetString("weibo.passwd")
+	redirecturi := viper.GetString("weibo.redirect_uri")
+	securityDomain := viper.GetString("weibo.security_domain")
+	clock, err = NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain)
 	if err != nil {
-		log.Println("NewClock error:", err)
-		return
+		log.Println("init clock error:", err)
+		return errors.Wrap(err, "initClock error")
+	}
+	return nil
+}
+
+func ringJob() {
+	if clock == nil {
+		log.Println("ringJob find clock is nil, try to initClock...")
+		if err := initClock(); err != nil {
+			return
+		}
 	}
 	if err := clock.Ring(); err != nil {
 		log.Println("ringJob Ring error:", err)
@@ -23,13 +41,7 @@ func ringJob() {
 }
 
 func runCronServer() {
-	appkey := viper.GetString("weibo.app_key")
-	appsecret := viper.GetString("weibo.app_secret")
-	username := viper.GetString("weibo.username")
-	passwd := viper.GetString("weibo.passwd")
-	redirecturi := viper.GetString("weibo.redirect_uri")
-	securityDomain := viper.GetString("weibo.security_domain")
-	clock, err = NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain)
+	initClock()
 	cronLocation := viper.GetString("cron.location")
 	if cronLocation == "" {
 		cronLocation = "Asia/Shanghai"
