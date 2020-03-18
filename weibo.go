@@ -441,3 +441,38 @@ func (w *Weibo) StatusesShare(token, status string, pic io.Reader) error {
 	}
 	return nil
 }
+
+// TokenInfoResp get_token_info接口返回结构
+type TokenInfoResp struct {
+	UID      string `json:"uid"`
+	Appkey   string `json:"appkey"`
+	Scope    string `json:"scope"`
+	CreateAt string `json:"create_at"`
+	ExpireIn string `json:"expire_in"`
+}
+
+// TokenInfo 查询用户access_token的授权相关信息，包括授权时间，过期时间和scope权限
+// https://api.weibo.com/oauth2/get_token_info
+func (w *Weibo) TokenInfo(token string) (*TokenInfoResp, error) {
+	apiURL := "https://api.weibo.com/oauth2/get_token_info"
+	data := url.Values{
+		"access_token": {token},
+	}
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, errors.Wrap(err, "weibo TokenInfo NewRequest error")
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := w.client.Do(req)
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "weibo TokenInfo ReadAll error")
+	}
+	tokenInfoResp := &TokenInfoResp{}
+	if err := json.Unmarshal(body, tokenInfoResp); err != nil {
+		return nil, errors.Wrap(err, "weibo TokenInfo Unmarshal error")
+	}
+	return tokenInfoResp, nil
+}

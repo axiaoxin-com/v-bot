@@ -8,7 +8,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-func init() {
+// InitConfig 初始化配置
+func InitConfig() {
 	processdir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		log.Fatal("[FATAL] get processdir error", err)
@@ -27,6 +28,7 @@ func init() {
 }
 
 func main() {
+	InitConfig()
 	log.Println("running cron server...")
 	runCronServer()
 }

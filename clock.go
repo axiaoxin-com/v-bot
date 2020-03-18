@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -46,13 +46,7 @@ type Clock struct {
 }
 
 // NewClock return clock object
-func NewClock() (*Clock, error) {
-	appkey := viper.GetString("weibo.app_key")
-	appsecret := viper.GetString("weibo.app_secret")
-	username := viper.GetString("weibo.username")
-	passwd := viper.GetString("weibo.passwd")
-	redirecturi := viper.GetString("weibo.redirect_uri")
-	securityDomain := viper.GetString("weibo.security_domain")
+func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain string) (*Clock, error) {
 	weibo := NewWeibo(appkey, appsecret, username, passwd, redirecturi)
 	if err := weibo.PCLogin(); err != nil {
 		return nil, errors.Wrap(err, "clock NewClock PCLogin error")
@@ -86,6 +80,43 @@ func (c *Clock) OclockText() string {
 
 // Ring 整点报时
 func (c *Clock) Ring() error {
+	if err := c.UpdateToken(); err != nil {
+		return errors.Wrap(err, "clock Ring UpdateToken error")
+	}
 	text := c.OclockText()
-	return c.weibo.StatusesShare(c.accessToken, text, nil)
+	if err := c.weibo.StatusesShare(c.accessToken, text, nil); err != nil {
+		return errors.Wrap(err, "clock Ring StatusesShare error")
+	}
+	return nil
+}
+
+// UpdateToken 检查access_token是否过去，过期则更新
+func (c *Clock) UpdateToken() error {
+	// 查询token信息
+	info, err := c.weibo.TokenInfo(c.accessToken)
+	if err != nil {
+		return errors.Wrap(err, "clock UpdateToken TokenInfo error")
+	}
+	// 判断token 1小时后是否会过期
+	hour1 := 60 * 60
+	expireIn, err := strconv.Atoi(info.ExpireIn)
+	if err != nil {
+		return errors.Wrap(err, "clock UpdateToken ParseInt error")
+	}
+	// 过期则更新token
+	if expireIn <= hour1 {
+		if err := c.weibo.PCLogin(); err != nil {
+			return errors.Wrap(err, "clock UpdateToken PCLogin error")
+		}
+		code, err := c.weibo.AuthCode()
+		if err != nil {
+			return errors.Wrap(err, "clock UpdateToken AuthCode error")
+		}
+		token, err := c.weibo.AccessToken(code)
+		if err != nil {
+			return errors.Wrap(err, "clock UpdateToken AccessToken error")
+		}
+		c.accessToken = token.AccessToken
+	}
+	return nil
 }

@@ -6,6 +6,9 @@ username = "微博登录账号"
 passwd = "微博密码"
 security_domain = "你设置的安全域名"
 
+test_username = "单元测试用的微博账号"
+test_passwd = "测试账号的密码"
+
 [cron]
 location = "Asia/Shanghai"
 ring_job = "@hourly"
