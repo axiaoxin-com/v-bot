@@ -1,0 +1,11 @@
+[weibo]
+app_key = "你的appkey"
+app_secret = "你的appsecret"
+redirect_uri = "http://httpbin.org/get"
+username = "微博登录账号"
+passwd = "微博密码"
+security_domain = "你设置的安全域名"
+
+[cron]
+location = "Asia/Shanghai"
+ring_job = "@hourly"
