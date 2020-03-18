@@ -27,5 +27,6 @@ func init() {
 }
 
 func main() {
+	log.Println("running cron server...")
 	runCronServer()
 }

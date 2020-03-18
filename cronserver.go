@@ -29,10 +29,15 @@ func runCronServer() {
 	if err != nil {
 		log.Fatal("load location error:", err)
 	}
+	log.Println("run cron server with location", location)
 	c := cron.NewWithLocation(location)
+	log.Println("adding jobs for cron server...")
 	if ringJobSchedule := viper.GetString("cron.ring_job"); ringJobSchedule != "" {
-		c.AddFunc(ringJobSchedule, ringJob)
-		log.Println("add ring job as", ringJobSchedule)
+		if err := c.AddFunc(ringJobSchedule, ringJob); err != nil {
+			log.Println("add ring job error:", err)
+		} else {
+			log.Println("added ring job as", ringJobSchedule)
+		}
 	}
 	c.Start()
 	defer c.Stop()
