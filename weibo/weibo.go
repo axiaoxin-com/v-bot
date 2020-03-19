@@ -105,7 +105,8 @@ func (w *Weibo) PCLogin() error {
 	ssologinURL := "https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.19)"
 	// pinURL := "https://login.sina.com.cn/cgi/pin.php" // 登录验证码相关url
 
-	// 请求prelogin
+	// 请求prelogin 获得 servertime, nonce, pubkey, rsakv
+	// 对账号进行base64编码 对应javascript中encodeURIComponent然后base64编码
 	su := base64.StdEncoding.EncodeToString([]byte(w.username))
 	req, err := http.NewRequest("GET", preloginURL, nil)
 	if err != nil {
@@ -141,14 +142,18 @@ func (w *Weibo) PCLogin() error {
 	}
 
 	// 请求ssologin
+	// 拼接明文js加密文件中得到
 	encMsg := []byte(fmt.Sprint(preLoginResp.Servertime, "\t", preLoginResp.Nonce, "\n", w.passwd))
+	// 创建公钥
 	n, _ := new(big.Int).SetString(preLoginResp.Pubkey, 16)
 	e, _ := new(big.Int).SetString("10001", 16)
 	pubkey := &rsa.PublicKey{N: n, E: int(e.Int64())}
+	// 加密公钥
 	sp, err := rsa.EncryptPKCS1v15(rand.Reader, pubkey, encMsg)
 	if err != nil {
 		return errors.Wrap(err, "weibo PCLogin EncryptPKCS1v15 error")
 	}
+	// 将加密信息转换为16进制
 	hexsp := hex.EncodeToString([]byte(sp))
 	data := url.Values{
 		"entry":      {"account"},
@@ -353,8 +358,8 @@ func (w *Weibo) AccessToken(code string) (*TokenResp, error) {
 func (w *Weibo) StatusesShare(token, status string, pic io.Reader) error {
 	apiURL := "https://api.weibo.com/2/statuses/share.json"
 	ip := realip()
-	var bodyBuf *bytes.Buffer
-	var writer *multipart.Writer
+	bodyBuf := &bytes.Buffer{}
+	writer := multipart.NewWriter(bodyBuf)
 	if pic == nil {
 		data := url.Values{
 			"access_token": {token},
@@ -363,16 +368,24 @@ func (w *Weibo) StatusesShare(token, status string, pic io.Reader) error {
 		}
 		bodyBuf = bytes.NewBufferString(data.Encode())
 	} else {
-		writer = multipart.NewWriter(bodyBuf)
-		defer writer.Close()
-		err := writer.WriteField("access_token", token)
-		err = writer.WriteField("status", status)
-		err = writer.WriteField("rip", ip)
+		picWriter, err := writer.CreateFormFile("pic", "picname.png")
 		if err != nil {
-			return errors.Wrap(err, "weibo StatusesShare WriteField error")
+			return errors.Wrap(err, "weibo StatusesShare CreateFormFile error")
 		}
-		picWriter, err := writer.CreateFormFile("fieldname", "filename")
-		io.Copy(picWriter, pic)
+		if _, err := io.Copy(picWriter, pic); err != nil {
+			return errors.Wrap(err, "weibo StatusesShare io.Copy error")
+		}
+
+		if err := writer.WriteField("access_token", token); err != nil {
+			return errors.Wrap(err, "weibo StatusesShare WriteField access_token error")
+		}
+		if err := writer.WriteField("status", status); err != nil {
+			return errors.Wrap(err, "weibo StatusesShare WriteField status error")
+		}
+		if err := writer.WriteField("rip", ip); err != nil {
+			return errors.Wrap(err, "weibo StatusesShare WriteField rip error")
+		}
+		writer.Close() // must close before new request
 	}
 	req, err := http.NewRequest("POST", apiURL, bodyBuf)
 	if err != nil {
@@ -396,6 +409,9 @@ func (w *Weibo) StatusesShare(token, status string, pic io.Reader) error {
 	sr := &StatusesShareResp{}
 	if err := json.Unmarshal(body, sr); err != nil {
 		return errors.Wrap(err, "weibo StatusesShare Unmarshal error:"+string(body))
+	}
+	if sr.IDStr == "" {
+		return errors.New(string(body))
 	}
 	return nil
 }
