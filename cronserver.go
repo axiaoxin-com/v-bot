@@ -25,6 +25,7 @@ func initWeiboClock() error {
 		log.Println("[ERROR] cronserver init weibo clock error:", err)
 		return errors.Wrap(err, "cronserver initClock error")
 	}
+	log.Println("[INFO] cronserver inited weiboClock.")
 	return nil
 }
 

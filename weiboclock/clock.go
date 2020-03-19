@@ -58,15 +58,15 @@ type Clock struct {
 func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain string) (*Clock, error) {
 	weibo := weibo.NewWeibo(appkey, appsecret, username, passwd, redirecturi)
 	if err := weibo.PCLogin(); err != nil {
-		return nil, errors.Wrap(err, "clock NewClock PCLogin error")
+		return nil, errors.Wrap(err, "weiboclock NewClock PCLogin error")
 	}
 	code, err := weibo.AuthCode()
 	if err != nil {
-		return nil, errors.Wrap(err, "clock NewClock AuthCode error")
+		return nil, errors.Wrap(err, "weiboclock NewClock AuthCode error")
 	}
 	token, err := weibo.AccessToken(code)
 	if err != nil {
-		return nil, errors.Wrap(err, "clock NewClock AccessToken error")
+		return nil, errors.Wrap(err, "weiboclock NewClock AccessToken error")
 	}
 	return &Clock{
 		weibo:          weibo,
@@ -91,11 +91,11 @@ func (c *Clock) OclockText() string {
 // Toll 发送整点报时微博
 func (c *Clock) Toll() error {
 	if err := c.UpdateToken(); err != nil {
-		return errors.Wrap(err, "clock Toll UpdateToken error")
+		return errors.Wrap(err, "weiboclock Toll UpdateToken error")
 	}
 	text := c.OclockText()
 	if err := c.weibo.StatusesShare(c.token.AccessToken, text, nil); err != nil {
-		return errors.Wrap(err, "clock Toll StatusesShare error")
+		return errors.Wrap(err, "weiboclock Toll StatusesShare error")
 	}
 	return nil
 }
@@ -106,20 +106,20 @@ func (c *Clock) UpdateToken() error {
 	age := time.Now().Unix() - c.tokenCreatedAt
 	// 过期则更新token
 	if age >= c.token.ExpiresIn {
-		log.Println("[INFO] clock token will expire, let set a new token")
+		log.Println("[INFO] weiboclock token will expire, let set a new token")
 		if err := c.weibo.PCLogin(); err != nil {
-			return errors.Wrap(err, "clock UpdateToken PCLogin error")
+			return errors.Wrap(err, "weiboclock UpdateToken PCLogin error")
 		}
 		code, err := c.weibo.AuthCode()
 		if err != nil {
-			return errors.Wrap(err, "clock UpdateToken AuthCode error")
+			return errors.Wrap(err, "weiboclock UpdateToken AuthCode error")
 		}
 		token, err := c.weibo.AccessToken(code)
 		if err != nil {
-			return errors.Wrap(err, "clock UpdateToken AccessToken error")
+			return errors.Wrap(err, "weiboclock UpdateToken AccessToken error")
 		}
 		c.token = token
 	}
-	log.Println("[INFO] clock check token age =", age)
+	log.Printf("[INFO] weiboclock check token age=%d, ExpiresIn=%d", age, c.token.ExpiresIn)
 	return nil
 }
