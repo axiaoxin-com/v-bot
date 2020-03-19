@@ -9,7 +9,7 @@ import (
 )
 
 // InitConfig 初始化配置
-func InitConfig() {
+func InitConfig(paths ...string) {
 	processdir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		log.Fatal("[FATAL] get processdir error", err)
@@ -22,6 +22,9 @@ func InitConfig() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(processdir)
 	viper.AddConfigPath(workdir)
+	for _, p := range paths {
+		viper.AddConfigPath(p)
+	}
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal("[FATAL] viper ReadInConfig error", err)
 	}

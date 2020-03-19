@@ -53,7 +53,7 @@ func runCronServer() {
 	}
 	log.Println("[INFO] cronserver running with location", location)
 	c := cron.NewWithLocation(location)
-	log.Println("[INFO] cronserver adding jobs for cron server...")
+	log.Println("[INFO] cronserver adding jobs...")
 	if ringJobSchedule := viper.GetString("cron.ring_job"); ringJobSchedule != "" {
 		if err := c.AddFunc(ringJobSchedule, tollJob); err != nil {
 			log.Println("[ERROR] cronserver add tollJob error:", err)

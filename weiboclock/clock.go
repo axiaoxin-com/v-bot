@@ -113,6 +113,6 @@ func (c *Clock) UpdateToken() error {
 		}
 		c.token = token
 	}
-	log.Println("[INFO] clock check token age=", age)
+	log.Println("[INFO] clock check token age =", age)
 	return nil
 }
