@@ -1,4 +1,5 @@
-package main
+// Package weibo 封装微博API
+package weibo
 
 import (
 	"bytes"
@@ -10,11 +11,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"math/big"
-	mathRand "math/rand"
 	"mime/multipart"
-	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -26,66 +24,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// UserAgents ua list
-var UserAgents []string = []string{
-	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
-	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
-}
-
-// Weibo 定义各种微博相关方法
-type Weibo struct {
-	client      *http.Client
-	appkey      string
-	appsecret   string
-	redirecturi string
-	username    string
-	passwd      string
-	userAgent   string
-}
-
-// MobileLoginResp 移动登录返回结构
-type MobileLoginResp struct {
-	Retcode int                    `json:"retcode"`
-	Msg     string                 `json:"msg"`
-	Data    map[string]interface{} `json:"data"`
-}
-
-// PreLoginResp PC端prelogin登录返回结构
-type PreLoginResp struct {
-	Retcode    int    `json:"retcode"`
-	Servertime int    `json:"servertime"`
-	Pcid       string `json:"pcid"`
-	Nonce      string `json:"nonce"`
-	Pubkey     string `json:"pubkey"`
-	Rsakv      string `json:"rsakv"`
-	IsOpenlock int    `json:"is_openlock"`
-	Showpin    int    `json:"showpin"`
-	Exectime   int    `json:"exectime"`
-}
-
-// SsoLoginResp PC端ssologin登录返回结构
-type SsoLoginResp struct {
-	Retcode            string   `json:"retcode"`
-	Ticket             string   `json:"ticket"`
-	UID                string   `json:"uid"`
-	Nick               string   `json:"nick"`
-	CrossDomainURLList []string `json:"crossDomainUrlList"`
-}
-
-// RedirectResp 微博回调httpbin.org/get返回结构
-type RedirectResp struct {
-	Args map[string]string `json:"args"`
-}
-
-// TokenResp accesstoken返回结构
-type TokenResp struct {
-	AccessToken string `json:"access_token"`
-	ExpiresIn   int    `json:"expires_in"`
-	UID         string `json:"uid"`
-	IsRealName  string `json:"isRealName"`
-}
-
 // NewWeibo 创建Weibo实例
+// appkey 微博开放平台appkey
+// appsecret 微博开放平台appsecret
+// username 微博登录账号
+// password 微博密码
+// redirecturi 微博开发平台app设置的回调url
 func NewWeibo(appkey, appsecret, username, passwd, redirecturi string) *Weibo {
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{
@@ -102,13 +46,8 @@ func NewWeibo(appkey, appsecret, username, passwd, redirecturi string) *Weibo {
 	}
 }
 
-// 随机选一个ua
-func randUA() string {
-	mathRand.Seed(time.Now().Unix())
-	return UserAgents[mathRand.Intn(len(UserAgents))]
-}
-
 // MobileLogin 移动端登录微博
+// 该登录无法获取开放平台token
 func (w *Weibo) MobileLogin() error {
 	data := url.Values{
 		"username":     {w.username},
@@ -160,12 +99,11 @@ func (w *Weibo) MobileLogin() error {
 }
 
 // PCLogin 电脑web登录
+// 登录后才能成功获取开放平台授权码和token
 func (w *Weibo) PCLogin() error {
 	preloginURL := "https://login.sina.com.cn/sso/prelogin.php?"
 	ssologinURL := "https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.19)"
-	/*
-		pinURL := "https://login.sina.com.cn/cgi/pin.php"
-	*/
+	// pinURL := "https://login.sina.com.cn/cgi/pin.php" // 登录验证码相关url
 
 	// 请求prelogin
 	su := base64.StdEncoding.EncodeToString([]byte(w.username))
@@ -260,12 +198,7 @@ func (w *Weibo) PCLogin() error {
 	return w.loginSucceed(ssoLoginResp)
 }
 
-// randInt 产生指定数字范围内的随机数
-func randInt(min int, max int) int {
-	mathRand.Seed(time.Now().UnixNano())
-	return min + mathRand.Intn(max-min)
-}
-
+// loginSucceed 检查PCLogin后是否成功登录微博
 func (w *Weibo) loginSucceed(resp *SsoLoginResp) error {
 	// 请求login_url和home_url, 进一步验证登录是否成功
 	s := strings.Split(strings.Split(resp.CrossDomainURLList[0], "ticket=")[1], "&ssosavestate=")
@@ -308,7 +241,25 @@ func (w *Weibo) loginSucceed(resp *SsoLoginResp) error {
 	return nil
 }
 
-// AuthCode 获取授权码
+// AuthCode 请求微博授权，返回授权码
+// https://open.weibo.com/wiki/Oauth2/authorize
+// 请求参数：
+//    client_id	true	string	申请应用时分配的AppKey。
+//    redirect_uri	true	string	授权回调地址，站外应用需与设置的回调地址一致，站内应用需填写canvas page的地址。
+//    scope	false	string	申请scope权限所需参数，可一次申请多个scope权限，用逗号分隔。使用文档
+//    state	false	string	用于保持请求和回调的状态，在回调时，会在Query Parameter中回传该参数。开发者可以用这个参数验证请求有效性，也可以记录用户请求授权页前的位置。这个参数可用于防止跨站请求伪造（CSRF）攻击
+//    display	false	string	授权页面的终端类型，取值见下面的说明。
+//    forcelogin	false	boolean	是否强制用户重新登录，true：是，false：否。默认false。
+//    language	false	string	授权页语言，缺省为中文简体版，en为英文版。英文版测试中，开发者任何意见可反馈至 @微博API
+// display说明：
+//    default	默认的授权页面，适用于web浏览器。
+//    mobile	移动终端的授权页面，适用于支持html5的手机。注：使用此版授权页请用 https://open.weibo.cn/oauth2/authorize 授权接口
+//    wap	wap版授权页面，适用于非智能手机。
+//    client	客户端版本授权页面，适用于PC桌面应用。
+//    apponweibo	默认的站内应用授权页，授权后不返回access_token，只刷新站内应用父框架。
+// 返回数据：
+//    code	string	用于第二步调用oauth2/access_token接口，获取授权后的access token。
+//    state	string	如果传递参数，会回传该参数。
 func (w *Weibo) AuthCode() (string, error) {
 	authURL := "https://api.weibo.com/oauth2/authorize"
 	referer := fmt.Sprintf("%s?client_id=%s&redirect_uri=%s", authURL, w.appkey, w.redirecturi)
@@ -348,7 +299,20 @@ func (w *Weibo) AuthCode() (string, error) {
 	return redirectResp.Args["code"], nil
 }
 
-// AccessToken 获取token
+// AccessToken 请求access_token接口，返回token对象
+// https://open.weibo.com/wiki/Oauth2/access_token
+// 请求参数：
+//    client_id	true	string	申请应用时分配的AppKey。
+//    client_secret	true	string	申请应用时分配的AppSecret。
+//    grant_type	true	string	请求的类型，填写authorization_code
+// grant_type为authorization_code时:
+//    code	true	string	调用authorize获得的code值。
+//    redirect_uri	true	string	回调地址，需需与注册应用里的回调地址一致。
+// 返回数据：
+//    access_token	string	用户授权的唯一票据，用于调用微博的开放接口，同时也是第三方应用验证微博用户登录的唯一票据，第三方应用应该用该票据和自己应用内的用户建立唯一影射关系，来识别登录状态，不能使用本返回值里的UID字段来做登录识别。
+//    expires_in	string	access_token的生命周期，单位是秒数。
+//    remind_in	string	access_token的生命周期（该参数即将废弃，开发者请使用expires_in）。
+//    uid	string	授权用户的UID，本字段只是为了方便开发者，减少一次user/show接口调用而返回的，第三方应用不能用此字段作为用户登录状态的识别，只有access_token才是用户授权的唯一票据。
 func (w *Weibo) AccessToken(code string) (*TokenResp, error) {
 	tokenURL := "https://api.weibo.com/oauth2/access_token"
 	data := url.Values{
@@ -364,6 +328,9 @@ func (w *Weibo) AccessToken(code string) (*TokenResp, error) {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := w.client.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "weibo AccessToken Do error")
+	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -375,26 +342,6 @@ func (w *Weibo) AccessToken(code string) (*TokenResp, error) {
 		return nil, errors.Wrap(err, "weibo AccessToken Unmarshal error")
 	}
 	return tokenResp, nil
-}
-
-// realip 获取ip地址
-func realip() string {
-	ip := "127.0.0.1"
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		log.Println(err)
-		return ip
-	}
-
-	for _, a := range addrs {
-		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				ip = ipnet.IP.String()
-				break
-			}
-		}
-	}
-	return ip
 }
 
 // StatusesShare 第三方分享一条链接到微博
@@ -446,27 +393,23 @@ func (w *Weibo) StatusesShare(token, status string, pic io.Reader) error {
 	if err != nil {
 		return errors.Wrap(err, "weibo StatusesShare ReadAll error")
 	}
-	type succResp struct {
-		IDStr string `json:"idstr"`
-	}
-	sr := &succResp{}
+	sr := &StatusesShareResp{}
 	if err := json.Unmarshal(body, sr); err != nil {
 		return errors.Wrap(err, "weibo StatusesShare Unmarshal error:"+string(body))
 	}
 	return nil
 }
 
-// TokenInfoResp get_token_info接口返回结构
-type TokenInfoResp struct {
-	UID      string `json:"uid"`
-	Appkey   string `json:"appkey"`
-	Scope    string `json:"scope"`
-	CreateAt string `json:"create_at"`
-	ExpireIn string `json:"expire_in"`
-}
-
 // TokenInfo 查询用户access_token的授权相关信息，包括授权时间，过期时间和scope权限
-// https://api.weibo.com/oauth2/get_token_info
+// https://open.weibo.com/wiki/Oauth2/get_token_info
+// 请求参数：
+//    access_token：用户授权时生成的access_token。
+// 返回数据：
+//    uid	string	授权用户的uid。
+//    appkey	string	access_token所属的应用appkey。
+//    scope	string	用户授权的scope权限。
+//    create_at	string	access_token的创建时间，从1970年到创建时间的秒数。
+//    expire_in	string	access_token的剩余时间，单位是秒数。
 func (w *Weibo) TokenInfo(token string) (*TokenInfoResp, error) {
 	apiURL := "https://api.weibo.com/oauth2/get_token_info"
 	data := url.Values{
@@ -478,6 +421,9 @@ func (w *Weibo) TokenInfo(token string) (*TokenInfoResp, error) {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := w.client.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "weibo TokenInfo Do error")
+	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)

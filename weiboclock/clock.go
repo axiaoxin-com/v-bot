@@ -1,9 +1,10 @@
-package main
+package weiboclock
 
 import (
+	"cuitclock/weibo"
 	"fmt"
+	"log"
 	"math/rand"
-	"strconv"
 	"strings"
 	"time"
 
@@ -40,14 +41,15 @@ var (
 
 // Clock 钟楼结构
 type Clock struct {
-	weibo          *Weibo
-	accessToken    string
+	weibo          *weibo.Weibo
+	token          *weibo.TokenResp
+	tokenCreatedAt int64
 	securityDomain string
 }
 
 // NewClock return clock object
 func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain string) (*Clock, error) {
-	weibo := NewWeibo(appkey, appsecret, username, passwd, redirecturi)
+	weibo := weibo.NewWeibo(appkey, appsecret, username, passwd, redirecturi)
 	if err := weibo.PCLogin(); err != nil {
 		return nil, errors.Wrap(err, "clock NewClock PCLogin error")
 	}
@@ -61,7 +63,8 @@ func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain s
 	}
 	return &Clock{
 		weibo:          weibo,
-		accessToken:    token.AccessToken,
+		token:          token,
+		tokenCreatedAt: time.Now().Unix(),
 		securityDomain: securityDomain,
 	}, nil
 }
@@ -78,33 +81,25 @@ func (c *Clock) OclockText() string {
 	return fmt.Sprintf("%d点啦~ %s %s \nhttp://%s", oclock, mood, words, c.securityDomain)
 }
 
-// Ring 整点报时
-func (c *Clock) Ring() error {
+// Toll 发送整点报时微博
+func (c *Clock) Toll() error {
 	if err := c.UpdateToken(); err != nil {
-		return errors.Wrap(err, "clock Ring UpdateToken error")
+		return errors.Wrap(err, "clock Toll UpdateToken error")
 	}
 	text := c.OclockText()
-	if err := c.weibo.StatusesShare(c.accessToken, text, nil); err != nil {
-		return errors.Wrap(err, "clock Ring StatusesShare error")
+	if err := c.weibo.StatusesShare(c.token.AccessToken, text, nil); err != nil {
+		return errors.Wrap(err, "clock Toll StatusesShare error")
 	}
 	return nil
 }
 
 // UpdateToken 检查access_token是否过去，过期则更新
 func (c *Clock) UpdateToken() error {
-	// 查询token信息
-	info, err := c.weibo.TokenInfo(c.accessToken)
-	if err != nil {
-		return errors.Wrap(err, "clock UpdateToken TokenInfo error")
-	}
-	// 判断token 1小时后是否会过期
-	hour1 := 60 * 60
-	expireIn, err := strconv.Atoi(info.ExpireIn)
-	if err != nil {
-		return errors.Wrap(err, "clock UpdateToken ParseInt error")
-	}
+	// 判断到当前时间为止token已存在时间是否已大于其过期时间
+	age := time.Now().Unix() - c.tokenCreatedAt
 	// 过期则更新token
-	if expireIn <= hour1 {
+	if age >= c.token.ExpiresIn {
+		log.Println("[INFO] clock token will expire, let set a new token")
 		if err := c.weibo.PCLogin(); err != nil {
 			return errors.Wrap(err, "clock UpdateToken PCLogin error")
 		}
@@ -116,7 +111,8 @@ func (c *Clock) UpdateToken() error {
 		if err != nil {
 			return errors.Wrap(err, "clock UpdateToken AccessToken error")
 		}
-		c.accessToken = token.AccessToken
+		c.token = token
 	}
+	log.Println("[INFO] clock check token age=", age)
 	return nil
 }

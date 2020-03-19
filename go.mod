@@ -1,4 +1,4 @@
-module cuitclock/weibo
+module cuitclock
 
 go 1.13
 
