@@ -36,7 +36,9 @@ func tollJob() {
 			return
 		}
 	}
-	if err := weiboClock.Toll(); err != nil {
+	picPlan := viper.GetString("weiboclock.pic_plan")
+	picPath := viper.GetString("weiboclock.pic_path")
+	if err := weiboClock.Toll(picPlan, picPath); err != nil {
 		log.Println("[ERROR] cronserver tollJob Toll error:", err)
 	}
 	log.Println("[INFO] cronserver tollJob complete.")
@@ -55,7 +57,7 @@ func runCronServer() {
 	log.Println("[INFO] cronserver running with location", location)
 	c := cron.NewWithLocation(location)
 	log.Println("[INFO] cronserver adding jobs...")
-	if ringJobSchedule := viper.GetString("cron.ring_job"); ringJobSchedule != "" {
+	if ringJobSchedule := viper.GetString("cron.toll_job"); ringJobSchedule != "" {
 		if err := c.AddFunc(ringJobSchedule, tollJob); err != nil {
 			log.Println("[ERROR] cronserver add tollJob error:", err)
 		} else {

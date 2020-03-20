@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	"strings"
 	"time"
 
@@ -41,8 +42,8 @@ func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain s
 	}, nil
 }
 
-// OclockText 返回报时文本内容
-func (c *Clock) OclockText() string {
+// OclockText 返回报时当前整点数和微博文本内容
+func (c *Clock) OclockText() (int, string) {
 	rand.Seed(time.Now().Unix())
 	mood := Moods[rand.Intn(len(Moods))]
 	oclock := time.Now().Hour()
@@ -50,17 +51,26 @@ func (c *Clock) OclockText() string {
 		oclock = oclock - 12
 	}
 	words := strings.Repeat(Words[rand.Intn(len(Words))], oclock)
-	return fmt.Sprintf("%d点啦~ %s %s http://%s", oclock, mood, words, c.securityDomain)
+	return oclock, fmt.Sprintf("%d点啦~ %s %s http://%s", oclock, mood, words, c.securityDomain)
 }
 
 // Toll 发送整点报时微博
-func (c *Clock) Toll() error {
+// picPlan 使用的图片方案，图片路径
+func (c *Clock) Toll(picPlan, picPath string) error {
 	if err := c.UpdateToken(); err != nil {
 		return errors.Wrap(err, "weiboclock Toll UpdateToken error")
 	}
-	text := c.OclockText()
-
-	if err := c.weibo.StatusesShare(c.token.AccessToken, text, nil); err != nil {
+	oclock, text := c.OclockText()
+	pic, err := PicReader(picPlan, picPath, oclock)
+	if err != nil {
+		log.Println("[ERROR] weiboclock Toll error:", err)
+		// 有error也不影响发送
+	} else {
+		if f, ok := pic.(*os.File); ok {
+			defer f.Close()
+		}
+	}
+	if err := c.weibo.StatusesShare(c.token.AccessToken, text, pic); err != nil {
 		return errors.Wrap(err, "weiboclock Toll StatusesShare error")
 	}
 	return nil
