@@ -1,7 +1,6 @@
 package weiboclock
 
 import (
-	"cuitclock/weibo"
 	"fmt"
 	"log"
 	"math/rand"
@@ -9,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/axiaoxin/weibo"
 	"github.com/pkg/errors"
 )
 
@@ -22,13 +22,13 @@ type Clock struct {
 
 // NewClock return clock object
 func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain string) (*Clock, error) {
-	weibo := weibo.NewWeibo(appkey, appsecret, username, passwd, redirecturi)
+	weibo := weibo.New(appkey, appsecret, username, passwd, redirecturi)
 	if err := weibo.PCLogin(); err != nil {
 		return nil, errors.Wrap(err, "weiboclock NewClock PCLogin error")
 	}
-	code, err := weibo.AuthCode()
+	code, err := weibo.Authorize()
 	if err != nil {
-		return nil, errors.Wrap(err, "weiboclock NewClock AuthCode error")
+		return nil, errors.Wrap(err, "weiboclock NewClock Authorize error")
 	}
 	token, err := weibo.AccessToken(code)
 	if err != nil {
@@ -63,7 +63,7 @@ func (c *Clock) Toll(picPlan, picPath string) error {
 	oclock, text := c.OclockText()
 	pic, err := PicReader(picPlan, picPath, oclock)
 	if err != nil {
-		log.Println("[ERROR] weiboclock Toll error:", err)
+		log.Println("[WARN] weiboclock Toll error:", err)
 		// 有error也不影响发送
 	} else {
 		if f, ok := pic.(*os.File); ok {
@@ -86,9 +86,9 @@ func (c *Clock) UpdateToken() error {
 		if err := c.weibo.PCLogin(); err != nil {
 			return errors.Wrap(err, "weiboclock UpdateToken PCLogin error")
 		}
-		code, err := c.weibo.AuthCode()
+		code, err := c.weibo.Authorize()
 		if err != nil {
-			return errors.Wrap(err, "weiboclock UpdateToken AuthCode error")
+			return errors.Wrap(err, "weiboclock UpdateToken Authorize error")
 		}
 		token, err := c.weibo.AccessToken(code)
 		if err != nil {
