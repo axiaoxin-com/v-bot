@@ -1,3 +1,5 @@
+// 定时任务
+
 package main
 
 import (
@@ -29,6 +31,7 @@ func initWeiboClock() error {
 	return nil
 }
 
+// 微博报时任务
 func tollJob() {
 	if weiboClock == nil {
 		log.Println("[WARN] cronserver tollJob find weiboClock is nil, try to initWeiboClock...")

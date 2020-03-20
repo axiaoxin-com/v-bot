@@ -1,3 +1,5 @@
+// Package weiboclock 微博上的成信钟楼
+// 通过cronserver实现微博报时
 package weiboclock
 
 import (
