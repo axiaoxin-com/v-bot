@@ -20,11 +20,11 @@ import (
 )
 
 // PicReader 返回图片的io.Reader对象
-func PicReader(plan, path string, oclock int) (io.Reader, error) {
-	log.Printf("[DEBUG] PicReader plan=%s path=%s oclock=%d", plan, path, oclock)
+func PicReader(plan, path string, hour int) (io.Reader, error) {
+	log.Printf("[DEBUG] PicReader plan=%s path=%s hour=%d", plan, path, hour)
 	switch strings.ToLower(plan) {
 	case "local":
-		filename := filepath.Join(path, fmt.Sprintf("%d.png", oclock))
+		filename := filepath.Join(path, fmt.Sprintf("%d.png", hour))
 		f, err := os.Open(filename)
 		if err != nil {
 			return nil, errors.Wrap(err, "weiboclock PicReader Open error")

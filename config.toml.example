@@ -18,7 +18,7 @@ toll_job = "@hourly"  # 报时任务定时执行时间配置 格式参考https:/
 # 微博钟楼相关配置
 [weiboclock]
 pic_plan = "local"  # 指定微博图片方案
-# local:使用程序所在目录的static目录中的png图片（图片以整点数为名）,图片不能大于5M
+# local:使用 pic_path 指定的目录中的png图片（图片以整点数为名）,图片不能大于5M
 # time:动态生成当前时间图片
 # online:在线获取图片,获取失败时使用time方案
 pic_path = "./pictures"  # local方案时指定图片目录路径
