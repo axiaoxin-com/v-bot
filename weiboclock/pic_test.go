@@ -14,12 +14,12 @@ func TestDoutulaSearch(t *testing.T) {
 }
 
 func TestMergeClockPic(t *testing.T) {
-	clock, err := os.Open("../assets/weibo/0.png")
+	clock, err := os.Open("../assets/images/clock/0.png")
 	if err != nil {
 		t.Error(err)
 	}
 	defer clock.Close()
-	icon, err := os.Open("../assets/weibo/icon.jpg")
+	icon, err := os.Open("../assets/images/clock/icon.jpg")
 	if err != nil {
 		t.Error(err)
 	}

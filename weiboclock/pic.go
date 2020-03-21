@@ -27,6 +27,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang/freetype"
 	"github.com/nfnt/resize"
 	"github.com/pkg/errors"
 	"github.com/rakyll/statik/fs"
@@ -45,7 +46,7 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "cuitclock PicReader New statikFS error")
 		}
-		filename := fmt.Sprintf("/weibo/%d.png", hour)
+		filename := fmt.Sprintf("/images/clock/%d.png", hour)
 		f, err := statikFS.Open(filename)
 		if err != nil {
 			return nil, errors.Wrap(err, "weiboclock PicReader statikFS.Open error")
@@ -61,7 +62,7 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		if err != nil {
 			log.Println("[ERROR] weiboclock PicReader PickOnePicFromURLs error:" + err.Error())
 			// 获取失败则使用默认图片
-			icon, err := os.Open("/weibo/icon.jpg")
+			icon, err := os.Open("/images/clock/icon.jpg")
 			if err != nil {
 				// 默认图片失败则使用最原始的图片
 				return f, nil
@@ -194,6 +195,9 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 	img := image.NewRGBA(bgBounds)
 	draw.Draw(img, bgBounds, background, bgBounds.Min, draw.Src)
 	draw.DrawMask(img, ftBounds.Add(frontOffset), front, ftBounds.Min, circle, ftBounds.Min, draw.Over)
+
+	// 图片底部加上当前日期
+	freetype.ParseFont()
 
 	imgBuf := new(bytes.Buffer)
 	err = png.Encode(imgBuf, img)
