@@ -10,5 +10,5 @@ require (
 	github.com/rakyll/statik v0.1.7
 	github.com/robfig/cron v1.2.0
 	github.com/spf13/viper v1.6.2
-	golang.org/x/image v0.0.0-20200119044424-58c23975cae1 // indirect
+	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 )

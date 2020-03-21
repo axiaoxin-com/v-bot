@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -15,7 +16,18 @@ import (
 
 	"github.com/axiaoxin/weibo"
 	"github.com/pkg/errors"
+	"github.com/rakyll/statik/fs"
 )
+
+var StatikFS http.FileSystem
+
+func init() {
+	var err error
+	StatikFS, err = fs.New()
+	if err != nil {
+		log.Fatalln("cuitclock init StatikFS error:", err)
+	}
+}
 
 // Clock 钟楼结构
 type Clock struct {

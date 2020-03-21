@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/golang/freetype"
+	"github.com/golang/freetype/truetype"
 	"github.com/nfnt/resize"
 	"github.com/pkg/errors"
 	"github.com/rakyll/statik/fs"
@@ -42,25 +43,21 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		return nil, nil
 	case "default":
 		// 使用内置表盘图片生成上传的图片
-		statikFS, err := fs.New()
-		if err != nil {
-			return nil, errors.Wrap(err, "cuitclock PicReader New statikFS error")
-		}
 		filename := fmt.Sprintf("/images/clock/%d.png", hour)
-		f, err := statikFS.Open(filename)
+		f, err := StatikFS.Open(filename)
 		if err != nil {
-			return nil, errors.Wrap(err, "weiboclock PicReader statikFS.Open error")
+			return nil, errors.Wrap(err, "weiboclock PicReader StatikFS.Open error")
 		}
 		// 获取doutula表情包
 		picURLs, err := DoutulaSearch(strconv.Itoa(hour), 1)
 		if err != nil {
 			// 获取失败则使用默认图片
-			log.Println("[ERROR] weiboclock PicReader DoutulaSearch error:" + err.Error())
+			log.Println("[ERROR] weiboclock PicReader DoutulaSearch error:", err)
 			return f, nil
 		}
 		f1, format, err := PickOnePicFromURLs(picURLs)
 		if err != nil {
-			log.Println("[ERROR] weiboclock PicReader PickOnePicFromURLs error:" + err.Error())
+			log.Println("[ERROR] weiboclock PicReader PickOnePicFromURLs error:", err)
 			// 获取失败则使用默认图片
 			icon, err := os.Open("/images/clock/icon.jpg")
 			if err != nil {
@@ -75,7 +72,7 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		mf, err := MergeClockPic(f, f1, format)
 		if err != nil {
 			// 融合失败则使用默认图片
-			log.Println("[ERROR] weiboclock PicReader MergeClockPic error:" + err.Error())
+			log.Println("[ERROR] weiboclock PicReader MergeClockPic error:", err)
 			return f, nil
 		}
 		return mf, nil
@@ -183,8 +180,8 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 	ftBounds := front.Bounds()
 	bgBounds := background.Bounds()
 	// front 放表盘中央
-	ftOffsetWidth := bgBounds.Size().X/2 - int(frontWidth)/2
-	ftOffsetHeight := bgBounds.Size().Y/2 - int(frontHeight)/2 + 40 // 不+40不能在中心位置
+	ftOffsetWidth := (bgBounds.Size().X - int(frontWidth)) / 2
+	ftOffsetHeight := (bgBounds.Size().Y-int(frontHeight))/2 + 40 // 不+40不能在中心位置
 	frontOffset := image.Pt(ftOffsetWidth, ftOffsetHeight)
 
 	// front 画成圆形
@@ -197,7 +194,28 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 	draw.DrawMask(img, ftBounds.Add(frontOffset), front, ftBounds.Min, circle, ftBounds.Min, draw.Over)
 
 	// 图片底部加上当前日期
-	freetype.ParseFont()
+	rFont, err := RandFont()
+	if err == nil {
+		fc := freetype.NewContext()
+		fc.SetFont(rFont) // 字体
+		fc.SetDPI(72)     // 分辨率
+		fontSize := 50.0
+		fc.SetFontSize(fontSize)                                   //字号
+		fc.SetClip(img.Bounds())                                   // 区域
+		fc.SetDst(img)                                             // 目标图片
+		fc.SetSrc(image.NewUniform(color.RGBA{52, 152, 219, 255})) // 字体颜色
+
+		text := time.Now().Format("2006-01-02")
+		pt := freetype.Pt((bgBounds.Size().X-len(text)*25)/2, bgBounds.Size().Y-50)
+		fmt.Println(pt)
+		_, err := fc.DrawString(text, pt)
+		if err != nil {
+			log.Println("[ERROR] weiboclock MergeClockPic DrawString error:", err)
+		}
+	} else {
+		// 字体获取失败则不加
+		log.Println("[ERROR] weiboclock MergeClockPic RandFont error:", err)
+	}
 
 	imgBuf := new(bytes.Buffer)
 	err = png.Encode(imgBuf, img)
@@ -230,4 +248,31 @@ func (c *Circle) At(x, y int) color.Color {
 		return color.Alpha{255}
 	}
 	return color.Alpha{0}
+}
+
+// RandFont 随机返回fonts中的一个字体
+func RandFont() (*truetype.Font, error) {
+	fontPaths := []string{}
+	fs.Walk(StatikFS, "/fonts", func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			fontPaths = append(fontPaths, path)
+		}
+		return nil
+	})
+	rand.Seed(time.Now().Unix())
+	fontPath := fontPaths[rand.Intn(len(fontPaths))]
+	log.Println("[DEBUG] weiboclock RandFont use font", fontPath)
+	fontFile, err := StatikFS.Open(fontPath)
+	fontBytes, err := ioutil.ReadAll(fontFile)
+	if err != nil {
+		return nil, errors.Wrap(err, "weiboclock RandFont StatikFS.Open error")
+	}
+	if err != nil {
+		return nil, errors.Wrap(err, "weiboclock RandFont ReadFile error")
+	}
+	f, err := freetype.ParseFont(fontBytes)
+	if err != nil {
+		return nil, errors.Wrap(err, "weiboclock RandFont ParseFont error")
+	}
+	return f, nil
 }
