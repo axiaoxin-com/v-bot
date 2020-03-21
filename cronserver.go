@@ -39,9 +39,8 @@ func tollJob() {
 			return
 		}
 	}
-	picPlan := viper.GetString("weiboclock.pic_plan")
 	picPath := viper.GetString("weiboclock.pic_path")
-	if err := weiboClock.Toll(picPlan, picPath); err != nil {
+	if err := weiboClock.Toll(picPath); err != nil {
 		log.Println("[ERROR] cronserver tollJob Toll error:", err)
 	}
 	log.Println("[INFO] cronserver tollJob complete.")

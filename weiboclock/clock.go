@@ -10,6 +10,9 @@ import (
 	"strings"
 	"time"
 
+	// 导入statik生成的代码
+	_ "cuitclock/statik"
+
 	"github.com/axiaoxin/weibo"
 	"github.com/pkg/errors"
 )
@@ -59,13 +62,13 @@ func (c *Clock) OclockText() (int, string) {
 }
 
 // Toll 发送整点报时微博
-// picPlan 使用的图片方案，图片路径
-func (c *Clock) Toll(picPlan, picPath string) error {
+// picPath 指定图片路径
+func (c *Clock) Toll(picPath string) error {
 	if err := c.UpdateToken(); err != nil {
 		return errors.Wrap(err, "weiboclock Toll UpdateToken error")
 	}
 	hour, text := c.OclockText()
-	pic, err := PicReader(picPlan, picPath, hour)
+	pic, err := PicReader(picPath, hour)
 	if err != nil {
 		log.Println("[WARN] weiboclock Toll error:", err)
 		// 有error也不影响发送

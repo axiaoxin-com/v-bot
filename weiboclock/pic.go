@@ -1,10 +1,8 @@
-// Package pic 微博图片方案
+// Package pic 微博图片参数
 // 仅支持JPEG、GIF、PNG图片，上传图片大小限制为<5M
-// 根据配置文件获取图片方案
-// local类型时从配置中指定的目录中获取整点数命名的png图片
-// time类型时通过代码生成一张写有当前时间2006-01-02 15:00:00的图片
-// online类型时按报时的数字去请求https://www.doutula.com/search?type=photo&more=1&keyword=1&page=1从其中的表情包中随机选择一张符合要求的图作为本次报时的上传图片，获取失败时使用time保底
-// 没有指定方案时不使用图片
+// pic_path为空不发送图片，为default时使用内置assets/weibo中的图片，配置中如果指定了weiboclock.pic_path，则使用指定目录中以整点数命名的png图片
+// 内置图片的处理逻辑设想：
+// 每次都从doutula上获取一张随机图片融入到当前内置图的表盘中央合成一张新的图，获取失败则用一个默认的图合成
 
 package weiboclock
 
@@ -20,21 +18,36 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/rakyll/statik/fs"
 )
 
 // PicReader 返回图片的io.Reader对象
-func PicReader(plan, path string, hour int) (io.Reader, error) {
-	log.Printf("[DEBUG] PicReader plan=%s path=%s hour=%d", plan, path, hour)
-	switch strings.ToLower(plan) {
-	case "local":
-		filename := filepath.Join(path, fmt.Sprintf("%d.png", hour))
-		f, err := os.Open(filename)
+// path 为空不返回图片， default返回默认内置图片，其他返回指定路径下的%d.png命名的图片
+func PicReader(path string, hour int) (io.Reader, error) {
+	log.Printf("[DEBUG] PicReader path=%s hour=%d", path, hour)
+	switch path {
+	case "":
+		return nil, nil
+	case "default":
+		// 使用默认内置图片
+		statikFS, err := fs.New()
 		if err != nil {
-			return nil, errors.Wrap(err, "weiboclock PicReader Open error")
+			return nil, errors.Wrap(err, "cuitclock PicReader New statikFS error")
+		}
+		filename := fmt.Sprintf("/weibo/%d.png", hour)
+		f, err := statikFS.Open(filename)
+		if err != nil {
+			return nil, errors.Wrap(err, "weiboclock PicReader statikFS.Open error")
 		}
 		return f, nil
 	default:
-		return nil, nil
+		// 设置了pic_path，使用自定义图片
+		filename := filepath.Join(path, fmt.Sprintf("%d.png", hour))
+		f, err := os.Open(filename)
+		if err != nil {
+			return nil, errors.Wrap(err, "weiboclock PicReader os.Open error")
+		}
+		return f, nil
 	}
 }
 
