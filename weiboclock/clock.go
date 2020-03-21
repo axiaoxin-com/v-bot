@@ -46,14 +46,15 @@ func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain s
 
 // OclockText 返回报时当前24小时制hour数和微博文本内容
 func (c *Clock) OclockText() (int, string) {
-	rand.Seed(time.Now().Unix())
+	now := time.Now()
+	rand.Seed(now.Unix())
 	mood := Moods[rand.Intn(len(Moods))]
-	hour := time.Now().Hour()
+	hour := now.Hour()
 	oclock := hour
 	if hour > 12 {
 		oclock = hour - 12
 	}
-	words := strings.Repeat(Words[rand.Intn(len(Words))], oclock)
+	words := strings.Repeat(Voices[rand.Intn(len(Voices))], oclock)
 	return hour, fmt.Sprintf("%d点啦~ %s %s http://%s", oclock, mood, words, c.securityDomain)
 }
 

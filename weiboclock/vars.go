@@ -1,8 +1,8 @@
 package weiboclock
 
 var (
-	// Words 微博文字
-	Words = []string{
+	// Voices 钟楼报时声音
+	Voices = []string{
 		"biu! ", "ha! ", "mua~ ", "dang! ", "ho! ", "hei! ", "pia! ", "dong~ ",
 		"he! ", "mia~ ", "ao~ ", "do~ ", "ga~ ", "bi! ", "ba~ ", "ma~ ", "miao~ ",
 		"pa! ", "no~ ", "bomb! ", "yeah~ ", "ka! ", "la~ ", "da! ", "OA! ", "meow~ ",
