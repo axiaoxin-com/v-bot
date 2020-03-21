@@ -15,13 +15,14 @@ func TestToll(t *testing.T) {
 	passwd := viper.GetString("weibo.test_passwd")
 	redirecturi := viper.GetString("weibo.redirect_uri")
 	securityDomain := viper.GetString("weibo.security_domain")
-	picPlan := viper.GetString("weiboclock.pic_plan")
-	picPath := viper.GetString("weiboclock.pic_path")
 
 	clock, err := NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain)
 	if err != nil {
 		t.Fatal(err)
 	}
+	// test local plan
+	picPlan := "local"
+	picPath := "../pictures/weibo"
 	if err := clock.Toll(picPlan, picPath); err != nil {
 		t.Error(err)
 	}

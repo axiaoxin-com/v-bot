@@ -2,7 +2,7 @@
 [weibo]
 app_key = "你的appkey"
 app_secret = "你的appsecret"
-redirect_uri = "http://httpbin.org/get"
+redirect_uri = "你的回调uri"
 username = "微博登录账号"
 passwd = "微博密码"
 security_domain = "你设置的安全域名"
@@ -21,4 +21,4 @@ pic_plan = "local"  # 指定微博图片方案
 # local:使用 pic_path 指定的目录中的png图片（图片以整点数为名）,图片不能大于5M
 # time:动态生成当前时间图片
 # online:在线获取图片,获取失败时使用time方案
-pic_path = "./pictures"  # local方案时指定图片目录路径
+pic_path = "./pictures/weibo"  # local方案时指定图片目录路径
