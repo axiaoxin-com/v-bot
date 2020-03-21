@@ -175,7 +175,7 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 		}
 	}
 
-	frontWidth := 305
+	frontWidth := 300
 	frontHeight := frontWidth
 	front = resize.Resize(uint(frontWidth), uint(frontHeight), front, resize.Lanczos3)
 
@@ -183,7 +183,7 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 	bgBounds := background.Bounds()
 	// front 放表盘中央
 	ftOffsetWidth := bgBounds.Size().X/2 - int(frontWidth)/2
-	ftOffsetHeight := bgBounds.Size().Y/2 - int(frontHeight)/2 + 40
+	ftOffsetHeight := bgBounds.Size().Y/2 - int(frontHeight)/2 + 40 // 不+40不能在中心位置
 	frontOffset := image.Pt(ftOffsetWidth, ftOffsetHeight)
 
 	// front 画成圆形
