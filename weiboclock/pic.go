@@ -23,11 +23,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
 	"github.com/nfnt/resize"
@@ -99,18 +99,18 @@ func DoutulaSearch(keyword string, page int) ([]string, error) {
 	if resp.StatusCode != 200 {
 		return nil, errors.New("weiboclock DoutulaSearch resp.Status=" + resp.Status)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+
+	dom, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return nil, errors.Wrap(err, "weiboclock DoutulaSearch ReadAll error")
+		return nil, errors.Wrap(err, "weiboclock DoutulaSearch NewDocumentFromReader error")
 	}
+
 	picURLs := []string{}
 	allowFormats := []string{"jpg", "jpeg", "png", "gif"}
-	// 正则匹配出图片url
-	picSrc, err := regexp.Compile(`<img referrerpolicy="no-referrer".+ data-original="(.+?)"`)
-	for _, matched := range picSrc.FindAllStringSubmatch(string(body), -1) {
-		if len(matched) == 2 {
-			picURL := matched[1]
-			// 过滤出指定格式的图片
+	dom.Find(".random_picture img[data-original]").Each(func(i int, s *goquery.Selection) {
+		// 过滤出指定格式的图片
+		picURL, exists := s.Attr("data-original")
+		if exists {
 			picURLSplited := strings.Split(picURL, ".")
 			format := picURLSplited[len(picURLSplited)-1]
 			for _, allowFormat := range allowFormats {
@@ -119,7 +119,7 @@ func DoutulaSearch(keyword string, page int) ([]string, error) {
 				}
 			}
 		}
-	}
+	})
 	if len(picURLs) == 0 {
 		return nil, errors.New("weiboclock DoutulaSearch get 0 picURLs")
 	}
