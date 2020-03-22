@@ -20,6 +20,7 @@ func TestMergeClockPic(t *testing.T) {
 	}
 	defer clock.Close()
 	icon, err := os.Open("../assets/images/clock/icon.jpg")
+	//icon, err := os.Open("/Users/ashin/Downloads/x.jpg")
 	if err != nil {
 		t.Error(err)
 	}

@@ -18,6 +18,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math"
 	"math/rand"
 	"net/http"
 	"os"
@@ -150,11 +151,14 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 	var front image.Image
 	var err error
 
+	// 背景表盘
 	background, err = png.Decode(clock)
 	if err != nil {
 		return nil, errors.Wrap(err, "weiboclock MergeClockPic Decode clock error")
 	}
+	bgBounds := background.Bounds()
 
+	// 中心表情包
 	switch format {
 	case "png":
 		front, err = png.Decode(pic)
@@ -173,25 +177,46 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 		}
 	}
 
-	frontWidth := 300
+	// 将表情包绘制在一个画布上，对画布进行圆角处理以显示完整表情包图片
+	// 根据画布尺寸计算表情包的图片尺寸
+	canvasWidth := 300 //画布宽度
+	canvasHeight := canvasWidth
+	radius := canvasWidth / 2 // 圆形半径
+	frontWidth := int(math.Sqrt(math.Pow(float64(radius), 2) + math.Pow(float64(radius), 2)))
 	frontHeight := frontWidth
+	// 表情包resize
 	front = resize.Resize(uint(frontWidth), uint(frontHeight), front, resize.Lanczos3)
-
 	ftBounds := front.Bounds()
-	bgBounds := background.Bounds()
-	// front 放表盘中央
-	ftOffsetWidth := (bgBounds.Size().X - int(frontWidth)) / 2
-	ftOffsetHeight := (bgBounds.Size().Y-int(frontHeight))/2 + 40 // 不+40不能在中心位置
-	frontOffset := image.Pt(ftOffsetWidth, ftOffsetHeight)
 
-	// front 画成圆形
-	p := image.Pt(frontWidth/2, frontHeight/2)
-	r := frontWidth / 2
-	circle := &Circle{p, r}
+	// 创建画布
+	canvas := image.NewRGBA(image.Rect(0, 0, canvasWidth, canvasHeight))
+	// 设置画布背景为白色
+	for m := 0; m < canvasWidth; m++ {
+		for n := 0; n < canvasHeight; n++ {
+			canvas.SetRGBA(m, n, color.RGBA{255, 255, 255, 255})
+		}
+	}
+	canvasBounds := canvas.Bounds()
+	// 计算表情包在画布上的offset
+	frontOffsetX := (canvasWidth - frontWidth) / 2
+	frontOffsetY := (canvasHeight - frontHeight) / 2
+	frontOffset := image.Pt(frontOffsetX, frontOffsetY)
+	// 将表情包画在画布上
+	draw.Draw(canvas, ftBounds.Add(frontOffset), front, ftBounds.Min, draw.Over)
 
+	// 画布圆角处理参数
+	p := image.Pt(canvasWidth/2, canvasHeight/2)
+	circle := &Circle{p, radius}
+
+	// 创建最终图片
 	img := image.NewRGBA(bgBounds)
+	// 画上表盘背景
 	draw.Draw(img, bgBounds, background, bgBounds.Min, draw.Src)
-	draw.DrawMask(img, ftBounds.Add(frontOffset), front, ftBounds.Min, circle, ftBounds.Min, draw.Over)
+	// 添加画布
+	canvasOffsetX := (bgBounds.Size().X - canvasWidth) / 2
+	canvasOffsetY := (bgBounds.Size().Y-canvasHeight)/2 + 40 // +40才能在表盘中心
+	canvasOffset := image.Pt(canvasOffsetX, canvasOffsetY)
+	draw.DrawMask(img, canvasBounds.Add(canvasOffset), canvas, canvasBounds.Min, circle, canvasBounds.Min, draw.Over)
 
 	// 图片底部加上当前日期
 	rFont, err := RandFont()
@@ -207,7 +232,6 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 
 		text := time.Now().Format("2006-01-02")
 		pt := freetype.Pt((bgBounds.Size().X-len(text)*25)/2, bgBounds.Size().Y-50)
-		fmt.Println(pt)
 		_, err := fc.DrawString(text, pt)
 		if err != nil {
 			log.Println("[ERROR] weiboclock MergeClockPic DrawString error:", err)
