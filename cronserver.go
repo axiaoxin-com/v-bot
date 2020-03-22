@@ -81,9 +81,6 @@ func tollJob() {
 func runCronServer() {
 	initWeiboClock()
 	cronLocation := viper.GetString("cron.location")
-	if cronLocation == "" {
-		cronLocation = "Asia/Shanghai"
-	}
 	location, err := time.LoadLocation(cronLocation)
 	if err != nil {
 		log.Fatal("[FATAL] cronserver load location error:", err)

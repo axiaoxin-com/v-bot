@@ -17,6 +17,7 @@ import (
 	"github.com/axiaoxin/weibo"
 	"github.com/pkg/errors"
 	"github.com/rakyll/statik/fs"
+	"github.com/spf13/viper"
 )
 
 // StatikFS statik obj
@@ -59,14 +60,14 @@ func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain, 
 	return &Clock{
 		weibo:          weibo,
 		token:          token,
-		tokenCreatedAt: AsiaShanghaiNow().Unix(),
+		tokenCreatedAt: LocationNow().Unix(),
 		securityDomain: securityDomain,
 	}, nil
 }
 
 // OclockText 返回报时当前24小时制hour数和微博文本内容
 func (c *Clock) OclockText() (int, string) {
-	now := AsiaShanghaiNow()
+	now := LocationNow()
 	rand.Seed(now.Unix())
 	mood := Moods[rand.Intn(len(Moods))]
 	hour := now.Hour()
@@ -104,7 +105,7 @@ func (c *Clock) Toll(picPath string) (*weibo.StatusesShareResp, error) {
 // UpdateToken 检查access_token是否过去，过期则更新
 func (c *Clock) UpdateToken() error {
 	// 判断到当前时间为止token已存在时间是否已大于其过期时间
-	age := AsiaShanghaiNow().Unix() - c.tokenCreatedAt
+	age := LocationNow().Unix() - c.tokenCreatedAt
 	// 过期则更新token
 	if age >= c.token.ExpiresIn {
 		log.Println("[INFO] weiboclock token will expire, let set a new token")
@@ -125,11 +126,11 @@ func (c *Clock) UpdateToken() error {
 	return nil
 }
 
-// AsiaShanghaiNow 获取Asia/Shanghai时区的当前时间
-func AsiaShanghaiNow() time.Time {
-	loc, err := time.LoadLocation("Asia/Shanghai")
+// LocationNow 返回配置中cron.location时区的当前时间
+func LocationNow() time.Time {
+	loc, err := time.LoadLocation(viper.GetString("cron.location"))
 	if err != nil {
-		log.Println("[ERROR] weiboclock AsiaShanghaiNow LoadLocation error:", err)
+		log.Println("[ERROR] weiboclock LocationNow LoadLocation error:", err)
 		return time.Now()
 	}
 	now := time.Now().In(loc)

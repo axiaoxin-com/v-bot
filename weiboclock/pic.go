@@ -137,7 +137,7 @@ func DoutulaSearch(keyword string, page int) ([]string, error) {
 
 // PickOnePicFromURLs 从给定的图片url中随机获取一张图片
 func PickOnePicFromURLs(picURLs []string) (io.ReadCloser, string, error) {
-	rand.Seed(AsiaShanghaiNow().Unix())
+	rand.Seed(LocationNow().Unix())
 	picURL := picURLs[rand.Intn(len(picURLs))]
 	log.Println("[DEBUG] weiboclock PickOnePicFromURLs picURL:", picURL)
 	picURLSplited := strings.Split(picURL, ".")
@@ -239,7 +239,7 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 		fc.SetDst(img)                                             // 目标图片
 		fc.SetSrc(image.NewUniform(color.RGBA{52, 152, 219, 255})) // 字体颜色
 
-		text := AsiaShanghaiNow().Format("2006-01-02")
+		text := LocationNow().Format("2006-01-02")
 		pt := freetype.Pt((bgBounds.Size().X-len(text)*25)/2, bgBounds.Size().Y-50)
 		_, err := fc.DrawString(text, pt)
 		if err != nil {
@@ -292,7 +292,7 @@ func RandFont() (*truetype.Font, error) {
 		}
 		return nil
 	})
-	rand.Seed(AsiaShanghaiNow().Unix())
+	rand.Seed(LocationNow().Unix())
 	fontPath := fontPaths[rand.Intn(len(fontPaths))]
 	log.Println("[DEBUG] weiboclock RandFont use font", fontPath)
 	fontFile, err := StatikFS.Open(fontPath)

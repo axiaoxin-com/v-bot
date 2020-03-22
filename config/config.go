@@ -25,6 +25,9 @@ func InitConfig(paths ...string) {
 	for _, p := range paths {
 		viper.AddConfigPath(p)
 	}
+
+	viper.SetDefault("cron.location", "Asia/Shanghai")
+
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal("[FATAL] viper ReadInConfig error", err)
 	}
