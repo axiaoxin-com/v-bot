@@ -34,6 +34,31 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
+// HourPic 根据hour值返回在线图片
+func HourPic(hour int) (io.ReadCloser, string, error) {
+	var f io.ReadCloser
+	var err error
+	var format string
+	var picURLs []string
+
+	// 获取doutula表情包
+	picURLs, err = DoutulaSearch(strconv.Itoa(hour), 1)
+	if err == nil {
+		f, format, err = PickOnePicFromURLs(picURLs)
+	}
+
+	if err != nil {
+		// 获取失败则使用默认图片
+		icon, err := os.Open("/images/clock/icon.jpg")
+		if err != nil {
+			return nil, "", err
+		}
+		f = icon
+		format = "jpg"
+	}
+	return f, format, nil
+}
+
 // PicReader 返回图片的io.Reader对象
 // path 为空不返回图片， default返回默认内置图片，其他返回指定路径下的%d.png命名的图片
 func PicReader(path string, hour int) (io.Reader, error) {
@@ -48,24 +73,9 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "weiboclock PicReader StatikFS.Open error")
 		}
-		// 获取doutula表情包
-		picURLs, err := DoutulaSearch(strconv.Itoa(hour), 1)
+		f1, format, err := HourPic(hour)
 		if err != nil {
-			// 获取失败则使用默认图片
-			log.Println("[ERROR] weiboclock PicReader DoutulaSearch error:", err)
 			return f, nil
-		}
-		f1, format, err := PickOnePicFromURLs(picURLs)
-		if err != nil {
-			log.Println("[ERROR] weiboclock PicReader PickOnePicFromURLs error:", err)
-			// 获取失败则使用默认图片
-			icon, err := os.Open("/images/clock/icon.jpg")
-			if err != nil {
-				// 默认图片失败则使用最原始的图片
-				return f, nil
-			}
-			f1 = icon
-			format = "jpg"
 		}
 		defer f1.Close()
 		// 将获取的图片融合到表盘中央
