@@ -16,8 +16,9 @@ func TestToll(t *testing.T) {
 	passwd := viper.GetString("weibo.test_passwd")
 	redirecturi := viper.GetString("weibo.redirect_uri")
 	securityDomain := viper.GetString("weibo.security_domain")
+	authCode := viper.GetString("weibo.auth_code")
 
-	clock, err := NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain)
+	clock, err := NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain, authCode)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -4,6 +4,7 @@ package main
 
 import (
 	"cuitclock/weiboclock"
+	"fmt"
 	"log"
 	"time"
 
@@ -22,7 +23,10 @@ func initWeiboClock() error {
 	passwd := viper.GetString("weibo.passwd")
 	redirecturi := viper.GetString("weibo.redirect_uri")
 	securityDomain := viper.GetString("weibo.security_domain")
-	weiboClock, err = weiboclock.NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain)
+	authCode := viper.GetString("weibo.auth_code")
+	authURL := fmt.Sprintf("https://api.weibo.com/oauth2/authorize?redirect_uri=%s&response_type=code&client_id=%s", redirecturi, appkey)
+	log.Println("[INFO] authorize url:", authURL)
+	weiboClock, err = weiboclock.NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain, authCode)
 	if err != nil {
 		log.Println("[ERROR] cronserver init weibo clock error:", err)
 		return errors.Wrap(err, "cronserver initClock error")

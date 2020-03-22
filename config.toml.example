@@ -6,6 +6,7 @@ redirect_uri = "你的回调uri"
 username = "微博登录账号"
 passwd = "微博密码"
 security_domain = "你设置的安全域名"
+auth_code = "授权码" # 非必填项，当启动程序日志报错"retcode":"4049"（需要登录验证码）时，查看日志中的authorize url，访问该url获取code，填入此处，再次重启服务可以直接获取到token，绕过登录
 
 test_username = "单元测试用的微博账号"
 test_passwd = "测试账号的密码"

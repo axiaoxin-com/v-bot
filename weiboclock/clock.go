@@ -19,6 +19,7 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
+// StatikFS statik obj
 var StatikFS http.FileSystem
 
 func init() {
@@ -38,19 +39,23 @@ type Clock struct {
 }
 
 // NewClock return clock object
-func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain string) (*Clock, error) {
+func NewClock(appkey, appsecret, username, passwd, redirecturi, securityDomain, authCode string) (*Clock, error) {
 	weibo := weibo.New(appkey, appsecret, username, passwd, redirecturi)
-	if err := weibo.PCLogin(); err != nil {
-		return nil, errors.Wrap(err, "weiboclock NewClock PCLogin error")
+	if authCode == "" {
+		if err := weibo.PCLogin(); err != nil {
+			return nil, errors.Wrap(err, "weiboclock NewClock PCLogin error")
+		}
+		code, err := weibo.Authorize()
+		if err != nil {
+			return nil, errors.Wrap(err, "weiboclock NewClock Authorize error")
+		}
+		authCode = code
 	}
-	code, err := weibo.Authorize()
-	if err != nil {
-		return nil, errors.Wrap(err, "weiboclock NewClock Authorize error")
-	}
-	token, err := weibo.AccessToken(code)
+	token, err := weibo.AccessToken(authCode)
 	if err != nil {
 		return nil, errors.Wrap(err, "weiboclock NewClock AccessToken error")
 	}
+	log.Println("[DEBUG] weiboclock NewClock code:", authCode, " token:", token.AccessToken)
 	return &Clock{
 		weibo:          weibo,
 		token:          token,
