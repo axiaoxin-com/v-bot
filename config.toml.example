@@ -1,3 +1,9 @@
+[server]
+debug = false   # 是否开启debug，开启后会提供http服务，调用/toll接口即可立即使用测试账号发微博。
+debug_addr = ":1733"  # debug http服务运行地址
+basic_auth_username = ""  # debug http服务请求时需要的基础认证账号用户名
+basic_auth_passwd = ""  # debug http服务请求时需要的基础认证账号密码
+
 # 微博账号信息相关配置
 [weibo]
 app_key = "你的appkey"
@@ -10,6 +16,7 @@ auth_code = "授权码" # 非必填项，当启动程序日志报错"retcode":"4
 
 test_username = "单元测试用的微博账号"
 test_passwd = "测试账号的密码"
+test_auth_code = "测试账号获取的authcode"
 
 # 定时任务相关配置
 [cron]

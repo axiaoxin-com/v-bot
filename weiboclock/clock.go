@@ -80,9 +80,9 @@ func (c *Clock) OclockText() (int, string) {
 
 // Toll 发送整点报时微博
 // picPath 指定图片路径
-func (c *Clock) Toll(picPath string) error {
+func (c *Clock) Toll(picPath string) (*weibo.StatusesShareResp, error) {
 	if err := c.UpdateToken(); err != nil {
-		return errors.Wrap(err, "weiboclock Toll UpdateToken error")
+		return nil, errors.Wrap(err, "weiboclock Toll UpdateToken error")
 	}
 	hour, text := c.OclockText()
 	pic, err := PicReader(picPath, hour)
@@ -94,10 +94,11 @@ func (c *Clock) Toll(picPath string) error {
 			defer f.Close()
 		}
 	}
-	if err := c.weibo.StatusesShare(c.token.AccessToken, text, pic); err != nil {
-		return errors.Wrap(err, "weiboclock Toll StatusesShare error")
+	resp, err := c.weibo.StatusesShare(c.token.AccessToken, text, pic)
+	if err != nil {
+		return nil, errors.Wrap(err, "weiboclock Toll StatusesShare error")
 	}
-	return nil
+	return resp, nil
 }
 
 // UpdateToken 检查access_token是否过去，过期则更新
