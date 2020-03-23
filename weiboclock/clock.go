@@ -72,8 +72,11 @@ func (c *Clock) OclockText() (int, string) {
 	mood := Moods[rand.Intn(len(Moods))]
 	hour := now.Hour()
 	oclock := hour
+	// 12小时制处理
 	if hour > 12 {
 		oclock = hour - 12
+	} else if hour == 0 {
+		oclock = 12
 	}
 	words := strings.Repeat(Voices[rand.Intn(len(Voices))], oclock)
 	return hour, fmt.Sprintf("%d点啦~ %s %s http://%s", oclock, mood, words, c.securityDomain)
