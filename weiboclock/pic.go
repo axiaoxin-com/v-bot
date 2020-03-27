@@ -49,7 +49,7 @@ func HourPic(hour int) (io.ReadCloser, string, error) {
 
 	if err != nil {
 		// 获取失败则使用默认图片
-		icon, err := os.Open("/images/clock/icon.jpg")
+		icon, err := StatikFS.Open("/images/clock/icon.jpg")
 		if err != nil {
 			return nil, "", err
 		}
@@ -75,6 +75,7 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		}
 		f1, format, err := HourPic(hour)
 		if err != nil {
+			log.Println("[ERROR] weiboclock PicReader HourPic error:", err)
 			return f, nil
 		}
 		defer f1.Close()
