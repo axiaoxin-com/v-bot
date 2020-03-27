@@ -14,7 +14,7 @@ import (
 	// 导入statik生成的代码
 	_ "cuitclock/statik"
 
-	"github.com/axiaoxin/weibo"
+	"github.com/axiaoxin-com/weibo"
 	"github.com/pkg/errors"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/viper"
