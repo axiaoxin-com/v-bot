@@ -48,6 +48,7 @@ func HourPic(hour int) (io.ReadCloser, string, error) {
 	}
 
 	if err != nil {
+		log.Println("[ERROR] HourPic pick doutula pic error:" + err.Error())
 		// 获取失败则使用默认图片
 		icon, err := StatikFS.Open("/images/clock/icon.jpg")
 		if err != nil {
