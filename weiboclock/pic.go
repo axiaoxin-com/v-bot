@@ -21,7 +21,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"time"
 
 	"github.com/axiaoxin-com/wttrin"
 	"github.com/golang/freetype"
@@ -55,20 +54,9 @@ func (c *Circle) At(x, y int) color.Color {
 	return color.Alpha{0}
 }
 
-// ClockPic 获取当前时间的表盘图片
-func ClockPic(hour int) (io.ReadCloser, error) {
-	filename := fmt.Sprintf("/images/clock/%d.png", hour)
-	// 表盘图片
-	f, err := StatikFS.Open(filename)
-	if err != nil {
-		return nil, errors.Wrap(err, "weiboclock ClockPic StatikFS.Open error")
-	}
-	return f, nil
-}
-
 // PicReader 返回图片的io.Reader对象
 // path 为空不返回图片， default返回默认内置图片，其他返回指定路径下的%d.png命名的图片
-func PicReader(path string, hour int) (io.Reader, error) {
+func (clock *WeiboClock) PicReader(path string, hour int) (io.Reader, error) {
 	log.Printf("[DEBUG] PicReader path=%s hour=%d\n", path, hour)
 	switch path {
 	case "":
@@ -89,7 +77,7 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		}
 		defer centerPic.Close()
 		// 将待合成图片融合到表盘中央
-		mergedPic, err := MergeClockPic(clockPic, centerPic, centerPicFormat, centerPicBgColor)
+		mergedPic, err := clock.MergeClockPic(clockPic, centerPic, centerPicFormat, centerPicBgColor)
 		if err != nil {
 			// 融合失败则使用默认图片
 			log.Println("[ERROR] weiboclock PicReader MergeClockPic error:", err)
@@ -105,6 +93,17 @@ func PicReader(path string, hour int) (io.Reader, error) {
 		}
 		return f, nil
 	}
+}
+
+// ClockPic 获取当前时间的表盘图片
+func ClockPic(hour int) (io.ReadCloser, error) {
+	filename := fmt.Sprintf("/images/clock/%d.png", hour)
+	// 表盘图片
+	f, err := StatikFS.Open(filename)
+	if err != nil {
+		return nil, errors.Wrap(err, "weiboclock ClockPic StatikFS.Open error")
+	}
+	return f, nil
 }
 
 // HourPic 根据hour值返回在线图片
@@ -147,7 +146,7 @@ func HourPic(hour int) (io.ReadCloser, string, color.RGBA, error) {
 // MergeClockPic 合并表盘和获取的图片
 // 参考文章：https://blog.golang.org/image-draw
 // https://golang.org/doc/progs/image_draw.go
-func MergeClockPic(clockPic, centerPic io.Reader, centerPicFormat string, centerPicBgColor color.RGBA) (*bytes.Buffer, error) {
+func (clock *WeiboClock) MergeClockPic(clockPic, centerPic io.Reader, centerPicFormat string, centerPicBgColor color.RGBA) (*bytes.Buffer, error) {
 	var background image.Image
 	var front image.Image
 	var err error
@@ -231,11 +230,7 @@ func MergeClockPic(clockPic, centerPic io.Reader, centerPicFormat string, center
 		fc.SetDst(img)                                             // 目标图片
 		fc.SetSrc(image.NewUniform(color.RGBA{52, 152, 219, 255})) // 字体颜色
 
-		text := time.Now().Format("2006-01-02")
-		// fix for testing
-		if Clock != nil {
-			text = Clock.Now().Format("2006-01-02")
-		}
+		text := clock.cronWeibo.Now().Format("2006-01-02")
 		pt := freetype.Pt((bgBounds.Size().X-len(text)*25)/2, bgBounds.Size().Y-50)
 		_, err := fc.DrawString(text, pt)
 		if err != nil {

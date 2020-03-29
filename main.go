@@ -12,10 +12,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-func main() {
-	config.InitConfig()
-	log.Println("[INFO] cuitclock inited config.")
-
+// 运行微博上的成信钟楼
+func runWeiboClock() {
 	// 初始化 weiboclock 的配置
 	location, err := time.LoadLocation(viper.GetString("weiboclock.location"))
 	if err != nil {
@@ -58,5 +56,15 @@ func main() {
 	}
 
 	// 运行weiboclock
-	weiboclock.Run(wcCfg)
+	weiboClock, err := weiboclock.New(wcCfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	weiboClock.Run()
+}
+
+func main() {
+	config.InitConfig()
+	log.Println("[INFO] cuitclock inited config.")
+	runWeiboClock()
 }

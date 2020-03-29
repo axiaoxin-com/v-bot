@@ -8,20 +8,38 @@ import (
 	"github.com/axiaoxin-com/cronweibo"
 )
 
-// Clock weiboclock对象
-var Clock *cronweibo.CronWeibo
+// WeiboClock 实例对象
+type WeiboClock struct {
+	cronWeibo *cronweibo.CronWeibo
+}
 
-// Run 运行weiboclock
-func Run(cfg *cronweibo.Config) {
-	var err error
-	Clock, err = cronweibo.New(cfg)
+// New 创建weiboclock实例
+func New(cfg *cronweibo.Config) (*WeiboClock, error) {
+	cw, err := cronweibo.New(cfg)
 	if err != nil {
-		log.Fatalln("[FATAL] New cronweibo error:", err)
+		return nil, err
+	}
+
+	// 创建实例
+	clock := &WeiboClock{
+		cronWeibo: cw,
+	}
+
+	return clock, nil
+}
+
+// Run 运行服务
+func (clock *WeiboClock) Run() {
+	// 初始化微博官方表情，失败不影响服务
+	if count, err := clock.InitWeiboEmotions(); err != nil {
+		log.Println("[ERROR] weiboclock InitWeiboEmotions error", err)
+	} else {
+		log.Println("[DEBUG] weiboclock InitWeiboEmotions count:", count)
 	}
 
 	// 注册报时任务
-	Clock.RegisterWeiboJobs(tollJob())
+	clock.cronWeibo.RegisterWeiboJobs(clock.tollJob())
 
 	// 运行
-	Clock.Start()
+	clock.cronWeibo.Start()
 }
