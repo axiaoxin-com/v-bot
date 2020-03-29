@@ -32,6 +32,10 @@ github.com/axiaoxin-com/wttrin v0.0.0-20200329153412-48e3ebc1b889 h1:kqyFnxqNDEo
 github.com/axiaoxin-com/wttrin v0.0.0-20200329153412-48e3ebc1b889/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
 github.com/axiaoxin-com/wttrin v0.0.0-20200329161647-c2d31026512c h1:KVxdmK4g2H7/qapp40sZjO5Brj+Nuw0Pp6EYqqqhi5g=
 github.com/axiaoxin-com/wttrin v0.0.0-20200329161647-c2d31026512c/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329181947-e43e871393ca h1:UhRw6Tesl6n0H8PuJL6dGk6EXANxN6bQxloumavlTBY=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329181947-e43e871393ca/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329190904-0488634268c0 h1:Pp24X84dkaOQx6qKhlfxTUuLP1IbpxT8BeZL4eWr7fk=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329190904-0488634268c0/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=

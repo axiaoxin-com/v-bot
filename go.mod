@@ -7,7 +7,7 @@ require (
 	github.com/axiaoxin-com/chaojiying v1.0.0
 	github.com/axiaoxin-com/cronweibo v1.0.2-0.20200329172213-691f44d11f99
 	github.com/axiaoxin-com/weibo v1.0.2
-	github.com/axiaoxin-com/wttrin v0.0.0-20200329161647-c2d31026512c
+	github.com/axiaoxin-com/wttrin v0.0.0-20200329190904-0488634268c0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pkg/errors v0.9.1
