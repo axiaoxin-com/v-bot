@@ -18,6 +18,10 @@ github.com/axiaoxin-com/weibo v1.0.1 h1:JFkAHvgoULvyR1u5PhdZQKfHQD5hAXjXyqeKxopD
 github.com/axiaoxin-com/weibo v1.0.1/go.mod h1:k/bAOI57WyB1ATE/+7rh4SkmkfR9MOvynkdyoyuIJco=
 github.com/axiaoxin-com/wttrin v0.0.0-20200329140813-55b2603f0c30 h1:wYaT3Ws1p/zjAWjx7mdr1oCUa8jQqJHK9he+NDF+s3w=
 github.com/axiaoxin-com/wttrin v0.0.0-20200329140813-55b2603f0c30/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329151228-89495feaf2cf h1:f019bYibCNdEZw4PvawiGeEvy5xxEzPqdm8j29KdUng=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329151228-89495feaf2cf/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329153412-48e3ebc1b889 h1:kqyFnxqNDEo1GrvEnX9CtEnNgPM27t34rlZBtkBtaTo=
+github.com/axiaoxin-com/wttrin v0.0.0-20200329153412-48e3ebc1b889/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=

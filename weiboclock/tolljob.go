@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"math/rand"
-	"os"
 	"strings"
 
 	// 导入statik生成的代码
@@ -49,12 +48,8 @@ func tollRun() (string, io.Reader) {
 	// 生成图片内容
 	pic, err := PicReader(viper.GetString("weiboclock.pic_path"), hour)
 	if err != nil {
-		log.Println("[WARN] weiboclock toll error:", err)
+		log.Println("[ERROR] weiboclock toll error:", err)
 		// 有error也不影响发送，获取图片失败就不发图片
-	} else {
-		if f, ok := pic.(*os.File); ok {
-			defer f.Close()
-		}
 	}
 	return text, pic
 }

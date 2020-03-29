@@ -23,9 +23,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/axiaoxin-com/wttrin"
 	"github.com/golang/freetype"
 	"github.com/nfnt/resize"
 	"github.com/pkg/errors"
+	"github.com/spf13/viper"
 )
 
 // Circle 圆形Mask
@@ -53,6 +55,17 @@ func (c *Circle) At(x, y int) color.Color {
 	return color.Alpha{0}
 }
 
+// ClockPic 获取当前时间的表盘图片
+func ClockPic(hour int) (io.ReadCloser, error) {
+	filename := fmt.Sprintf("/images/clock/%d.png", hour)
+	// 表盘图片
+	f, err := StatikFS.Open(filename)
+	if err != nil {
+		return nil, errors.Wrap(err, "weiboclock ClockPic StatikFS.Open error")
+	}
+	return f, nil
+}
+
 // PicReader 返回图片的io.Reader对象
 // path 为空不返回图片， default返回默认内置图片，其他返回指定路径下的%d.png命名的图片
 func PicReader(path string, hour int) (io.Reader, error) {
@@ -61,28 +74,28 @@ func PicReader(path string, hour int) (io.Reader, error) {
 	case "":
 		return nil, nil
 	case "default":
-		// 使用内置表盘图片生成上传的图片
-		filename := fmt.Sprintf("/images/clock/%d.png", hour)
 		// 表盘图片
-		f, err := StatikFS.Open(filename)
+		clockPic, err := ClockPic(hour)
 		if err != nil {
-			return nil, errors.Wrap(err, "weiboclock PicReader StatikFS.Open error")
+			return nil, err
 		}
-		// 当前时间的待合成图片
-		f1, format, err := HourPic(hour)
+		defer clockPic.Close()
+
+		// 当前时间的表盘中心位置图片信息
+		centerPic, centerPicFormat, centerPicBgColor, err := HourPic(hour)
 		if err != nil {
 			log.Println("[ERROR] weiboclock PicReader HourPic error:", err)
-			return f, nil
+			return clockPic, nil
 		}
-		defer f1.Close()
+		defer centerPic.Close()
 		// 将待合成图片融合到表盘中央
-		mf, err := MergeClockPic(f, f1, format)
+		mergedPic, err := MergeClockPic(clockPic, centerPic, centerPicFormat, centerPicBgColor)
 		if err != nil {
 			// 融合失败则使用默认图片
 			log.Println("[ERROR] weiboclock PicReader MergeClockPic error:", err)
-			return f, nil
+			return clockPic, nil
 		}
-		return mf, nil
+		return mergedPic, nil
 	default:
 		// 设置了pic_path，使用自定义图片
 		filename := filepath.Join(path, fmt.Sprintf("%d.png", hour))
@@ -95,13 +108,24 @@ func PicReader(path string, hour int) (io.Reader, error) {
 }
 
 // HourPic 根据hour值返回在线图片
-func HourPic(hour int) (io.ReadCloser, string, error) {
+func HourPic(hour int) (io.ReadCloser, string, color.RGBA, error) {
 	var f io.ReadCloser
 	var err error
 	var format string
+	var bgColor color.RGBA
 	var picURLs []string
 
-	// 获取doutula表情包
+	// 获取当前天气的图片
+	f, err = wttrin.Image(viper.GetString("wttrin.lang"), viper.GetString("wttrin.location"))
+	if err == nil {
+		format = "png"
+		bgColor = color.RGBA{0, 0, 0, 255} // 黑色背景
+		return f, format, bgColor, err
+	}
+
+	// 获取天气图片失败时，使用斗图啦表情
+	log.Println("[ERROR] weiboclock HourPic get weatherImg error", err)
+	bgColor = color.RGBA{255, 255, 255, 255} // 统一使用白色背景
 	picURLs, err = DoutulaSearch(strconv.Itoa(hour), 1)
 	if err == nil {
 		f, format, err = PickOnePicFromURLs(picURLs)
@@ -112,43 +136,43 @@ func HourPic(hour int) (io.ReadCloser, string, error) {
 		// 获取失败则使用默认图片
 		icon, err := StatikFS.Open("/images/clock/icon.jpg")
 		if err != nil {
-			return nil, "", err
+			return f, format, bgColor, err
 		}
 		f = icon
 		format = "jpg"
 	}
-	return f, format, nil
+	return f, format, bgColor, err
 }
 
 // MergeClockPic 合并表盘和获取的图片
 // 参考文章：https://blog.golang.org/image-draw
 // https://golang.org/doc/progs/image_draw.go
-func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
+func MergeClockPic(clockPic, centerPic io.Reader, centerPicFormat string, centerPicBgColor color.RGBA) (*bytes.Buffer, error) {
 	var background image.Image
 	var front image.Image
 	var err error
 
 	// 背景表盘
-	background, err = png.Decode(clock)
+	background, err = png.Decode(clockPic)
 	if err != nil {
 		return nil, errors.Wrap(err, "weiboclock MergeClockPic Decode clock error")
 	}
 	bgBounds := background.Bounds()
 
-	// 中心表情包
-	switch format {
+	// 中心位置图片
+	switch centerPicFormat {
 	case "png":
-		front, err = png.Decode(pic)
+		front, err = png.Decode(centerPic)
 		if err != nil {
 			return nil, errors.Wrap(err, "weiboclock MergeClockPic Decode pic as png error")
 		}
 	case "jpg", "jpeg":
-		front, err = jpeg.Decode(pic)
+		front, err = jpeg.Decode(centerPic)
 		if err != nil {
 			return nil, errors.Wrap(err, "weiboclock MergeClockPic Decode pic as jpeg error")
 		}
 	case "gif":
-		front, err = gif.Decode(pic)
+		front, err = gif.Decode(centerPic)
 		if err != nil {
 			return nil, errors.Wrap(err, "weiboclock MergeClockPic Decode pic as gif error")
 		}
@@ -167,10 +191,10 @@ func MergeClockPic(clock, pic io.Reader, format string) (*bytes.Buffer, error) {
 
 	// 创建画布
 	canvas := image.NewRGBA(image.Rect(0, 0, canvasWidth, canvasHeight))
-	// 设置画布背景为白色
+	// 设置画布背景为中心图片的背景色
 	for m := 0; m < canvasWidth; m++ {
 		for n := 0; n < canvasHeight; n++ {
-			canvas.SetRGBA(m, n, color.RGBA{255, 255, 255, 255})
+			canvas.SetRGBA(m, n, centerPicBgColor)
 		}
 	}
 	canvasBounds := canvas.Bounds()
