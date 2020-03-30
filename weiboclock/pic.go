@@ -22,11 +22,9 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/axiaoxin-com/wttrin"
 	"github.com/golang/freetype"
 	"github.com/nfnt/resize"
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 )
 
 // Circle 圆形Mask
@@ -67,7 +65,6 @@ func (clock *WeiboClock) PicReader(path string, hour int) (io.Reader, error) {
 		if err != nil {
 			return nil, err
 		}
-		defer clockPic.Close()
 
 		// 当前时间的表盘中心位置图片信息
 		centerPic, centerPicFormat, centerPicBgColor, err := HourPic(hour)
@@ -114,18 +111,16 @@ func HourPic(hour int) (io.ReadCloser, string, color.RGBA, error) {
 	var bgColor color.RGBA
 	var picURLs []string
 
-	// 获取当前天气的图片
-	log.Println("[DEBUG] HourPic start getting wttrin weather image")
-	f, err = wttrin.Image(viper.GetString("wttrin.lang"), viper.GetString("wttrin.location"))
-	if err == nil {
-		log.Println("[DEBUG] HourPic got the wttrin weather image")
+	// 优先使用天气图片
+	if WttrInImage != nil {
+		f = WttrInImage
 		format = "png"
 		bgColor = color.RGBA{0, 0, 0, 255} // 黑色背景
 		return f, format, bgColor, err
 	}
 
-	// 获取天气图片失败时，使用斗图啦表情
-	log.Println("[ERROR] weiboclock HourPic get wttrin weather image error", err)
+	// 天气图片不存在时，使用斗图啦表情
+	log.Println("[ERROR] weiboclock HourPic get a nil WttrInImage")
 	bgColor = color.RGBA{255, 255, 255, 255} // 统一使用白色背景
 	picURLs, err = DoutulaSearch(strconv.Itoa(hour), 1)
 	if err == nil {

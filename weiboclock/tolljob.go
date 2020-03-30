@@ -9,7 +9,6 @@ import (
 	_ "cuitclock/statik"
 
 	"github.com/axiaoxin-com/cronweibo"
-	"github.com/axiaoxin-com/wttrin"
 	"github.com/spf13/viper"
 )
 
@@ -36,13 +35,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	} else if hour == 0 {
 		oclock = 12
 	}
-	log.Println("[DEBUG] tollRun start getting wttrin Line weather")
-	weather, err := wttrin.Line(viper.GetString("wttrin.lang"), viper.GetString("wttrin.location"), "")
-	if err != nil {
-		log.Println("[ERROR] tollRun get weather error", err)
-	}
-	log.Println("[DEBUG] tollRun got the wttrin Line weather")
-	text := fmt.Sprintf("%d点啦~ %s %s\n\n%s\n", oclock, emotion, TollVoice(oclock), weather)
+	text := fmt.Sprintf("%d点啦~ %s %s\n\n%s\n", oclock, emotion, TollVoice(oclock), WttrInLine)
 
 	// 生成图片内容
 	pic, err := clock.PicReader(viper.GetString("weiboclock.pic_path"), hour)
