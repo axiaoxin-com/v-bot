@@ -13,5 +13,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/viper v1.6.2
+	github.com/starainrt/astro v0.0.0-20200211034612-54723046bbe4 // indirect
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1 // indirect
 )
