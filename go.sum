@@ -30,6 +30,8 @@ github.com/axiaoxin-com/wttrin v0.0.0-20200330070722-1a595197606a h1:jTY8/qIsw3U
 github.com/axiaoxin-com/wttrin v0.0.0-20200330070722-1a595197606a/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
 github.com/axiaoxin-com/wttrin v0.0.0-20200330105953-7d431072aa9b h1:dggdpXH0avXISFIvDuZq8zwPiLPq9lz3rSGteC12/h4=
 github.com/axiaoxin-com/wttrin v0.0.0-20200330105953-7d431072aa9b/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
+github.com/axiaoxin-com/wttrin v0.0.0-20200330122930-b0dbac4ef2d3 h1:ffmvMXRiNam57TdW/tBZjoMi0gPoicd9IRgDCdzO2VY=
+github.com/axiaoxin-com/wttrin v0.0.0-20200330122930-b0dbac4ef2d3/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
