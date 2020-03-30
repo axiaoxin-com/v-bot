@@ -26,6 +26,7 @@ func runWeiboClock() {
 	if tusername != "" && tpasswd != "" {
 		username = tusername
 		passwd = tpasswd
+		log.Println("[WARN] weiboClock will run with test account")
 	}
 	wcCfg := &cronweibo.Config{
 		WeiboAppkey:        viper.GetString("weibo.app_key"),
