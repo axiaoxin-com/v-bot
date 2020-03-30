@@ -29,3 +29,4 @@ accounts_json_path = "保存账号信息的json文件路径"
 [wttrin]
 lang = "天气预报语言"
 location = "天气预报的地点"
+refresh_schedule = 	"0 58 * * * *"  # 在整点前2分钟更新天气，整点的wttrin服务不稳定
