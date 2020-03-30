@@ -115,15 +115,17 @@ func HourPic(hour int) (io.ReadCloser, string, color.RGBA, error) {
 	var picURLs []string
 
 	// 获取当前天气的图片
+	log.Println("[DEBUG] HourPic start getting wttrin weather image")
 	f, err = wttrin.Image(viper.GetString("wttrin.lang"), viper.GetString("wttrin.location"))
 	if err == nil {
+		log.Println("[DEBUG] HourPic got the wttrin weather image")
 		format = "png"
 		bgColor = color.RGBA{0, 0, 0, 255} // 黑色背景
 		return f, format, bgColor, err
 	}
 
 	// 获取天气图片失败时，使用斗图啦表情
-	log.Println("[ERROR] weiboclock HourPic get weatherImg error", err)
+	log.Println("[ERROR] weiboclock HourPic get wttrin weather image error", err)
 	bgColor = color.RGBA{255, 255, 255, 255} // 统一使用白色背景
 	picURLs, err = DoutulaSearch(strconv.Itoa(hour), 1)
 	if err == nil {

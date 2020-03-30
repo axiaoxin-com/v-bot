@@ -41,18 +41,15 @@ var (
 
 	// WeiboEmotions 微博官方表情，weiboclock Run方法调用时进行初始化
 	WeiboEmotions = []string{}
-)
 
-// AllEmotions 返回全部表情列表
-func AllEmotions() []string {
-	return append(TextEmotions, WeiboEmotions...)
-}
+	// Emotions 全部表情 TextEmotions + 初始化后的WeiboEmotions
+	Emotions = []string{}
+)
 
 // PickOneEmotion 随机选择一个表情
 func PickOneEmotion() string {
 	rand.Seed(time.Now().Unix())
-	emotions := AllEmotions()
-	return emotions[rand.Intn(len(emotions))]
+	return Emotions[rand.Intn(len(Emotions))]
 }
 
 // TollVoice 报时拟声
@@ -62,10 +59,13 @@ func TollVoice(count int) string {
 	return strings.Repeat(voice, count)
 }
 
-// InitWeiboEmotions 初始化微博官方表情
-func (clock *WeiboClock) InitWeiboEmotions() (int, error) {
+// InitEmotions 初始化表情，返回表情总数
+func (clock *WeiboClock) InitEmotions() (int, error) {
 	// reset
+	Emotions = []string{}
 	WeiboEmotions = []string{}
+
+	// 获取微博官方表情
 	vb := clock.cronWeibo.WeiboClient()
 	token := clock.cronWeibo.Token()
 	language := "cnname"
@@ -76,6 +76,8 @@ func (clock *WeiboClock) InitWeiboEmotions() (int, error) {
 	}
 	for _, emotion := range *emotions {
 		WeiboEmotions = append(WeiboEmotions, emotion.Phrase)
+		Emotions = append(Emotions, emotion.Phrase)
 	}
-	return len(WeiboEmotions), nil
+	Emotions = append(Emotions, TextEmotions...)
+	return len(Emotions), nil
 }

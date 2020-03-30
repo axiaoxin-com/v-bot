@@ -30,11 +30,11 @@ func New(cfg *cronweibo.Config) (*WeiboClock, error) {
 
 // Run 运行服务
 func (clock *WeiboClock) Run() {
-	// 初始化微博官方表情，失败不影响服务
-	if count, err := clock.InitWeiboEmotions(); err != nil {
-		log.Println("[ERROR] weiboclock InitWeiboEmotions error", err)
+	// 初始化微博表情，失败不影响服务
+	if count, err := clock.InitEmotions(); err != nil {
+		log.Println("[ERROR] weiboclock InitEmotions error", err)
 	} else {
-		log.Println("[DEBUG] weiboclock InitWeiboEmotions count:", count)
+		log.Println("[DEBUG] weiboclock InitEmotions count:", count)
 	}
 
 	// 注册报时任务

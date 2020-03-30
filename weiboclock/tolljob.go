@@ -27,6 +27,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	// 生成文本内容
 	now := clock.cronWeibo.Now()
 	emotion := PickOneEmotion()
+	log.Println("[DEBUG] tollRun picked emotion", emotion)
 	hour := now.Hour()
 	oclock := hour
 	// 12小时制处理
@@ -35,10 +36,12 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	} else if hour == 0 {
 		oclock = 12
 	}
+	log.Println("[DEBUG] tollRun start getting wttrin Line weather")
 	weather, err := wttrin.Line(viper.GetString("wttrin.lang"), viper.GetString("wttrin.location"), "")
 	if err != nil {
 		log.Println("[ERROR] tollRun get weather error", err)
 	}
+	log.Println("[DEBUG] tollRun got the wttrin Line weather")
 	text := fmt.Sprintf("%d点啦~ %s %s\n\n%s\n", oclock, emotion, TollVoice(oclock), weather)
 
 	// 生成图片内容
