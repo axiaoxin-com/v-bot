@@ -21,6 +21,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/golang/freetype"
 	"github.com/nfnt/resize"
@@ -54,7 +55,8 @@ func (c *Circle) At(x, y int) color.Color {
 
 // PicReader 返回图片的io.Reader对象
 // path 为空不返回图片， default返回默认内置图片，其他返回指定路径下的%d.png命名的图片
-func (clock *WeiboClock) PicReader(path string, hour int) (io.Reader, error) {
+func PicReader(path string, now time.Time) (io.Reader, error) {
+	hour := now.Hour()
 	log.Printf("[DEBUG] PicReader path=%s hour=%d\n", path, hour)
 	switch path {
 	case "":
@@ -68,7 +70,7 @@ func (clock *WeiboClock) PicReader(path string, hour int) (io.Reader, error) {
 		// 获取当前时间的表盘中心位置图片
 		centerPic, centerPicFormat, centerPicBgColor := CenterPic(hour)
 		// 将中心图片融合到表盘中央
-		mergedPic, err := clock.MergeClockPic(clockPic, centerPic, centerPicFormat, centerPicBgColor)
+		mergedPic, err := MergeClockPic(now, clockPic, centerPic, centerPicFormat, centerPicBgColor)
 		if err != nil {
 			// 融合失败则直接返回表盘背景图片
 			log.Println("[ERROR] weiboclock PicReader MergeClockPic error:", err)
@@ -139,7 +141,7 @@ func CenterPic(hour int) (io.ReadCloser, string, color.RGBA) {
 // MergeClockPic 合并表盘和获取的图片
 // 参考文章：https://blog.golang.org/image-draw
 // https://golang.org/doc/progs/image_draw.go
-func (clock *WeiboClock) MergeClockPic(clockPic, centerPic io.ReadCloser, centerPicFormat string, centerPicBgColor color.RGBA) (*bytes.Buffer, error) {
+func MergeClockPic(now time.Time, clockPic, centerPic io.ReadCloser, centerPicFormat string, centerPicBgColor color.RGBA) (*bytes.Buffer, error) {
 	var background image.Image
 	var front image.Image
 	var err error
@@ -223,7 +225,7 @@ func (clock *WeiboClock) MergeClockPic(clockPic, centerPic io.ReadCloser, center
 		fc.SetDst(img)                                             // 目标图片
 		fc.SetSrc(image.NewUniform(color.RGBA{52, 152, 219, 255})) // 字体颜色
 
-		text := clock.cronWeibo.Now().Format("2006-01-02")
+		text := now.Format("2006-01-02")
 		pt := freetype.Pt((bgBounds.Size().X-len(text)*25)/2, bgBounds.Size().Y-50)
 		_, err := fc.DrawString(text, pt)
 		if err != nil {

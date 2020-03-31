@@ -38,7 +38,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	text := fmt.Sprintf("%d点啦~ %s %s\n\n%s\n", oclock, emotion, TollVoice(oclock), WttrInLine)
 
 	// 生成图片内容
-	pic, err := clock.PicReader(viper.GetString("weiboclock.pic_path"), hour)
+	pic, err := PicReader(viper.GetString("weiboclock.pic_path"), now)
 	if err != nil {
 		log.Println("[ERROR] weiboclock toll error:", err)
 		// 有error也不影响发送，获取图片失败就不发图片

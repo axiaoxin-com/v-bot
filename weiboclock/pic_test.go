@@ -1,8 +1,10 @@
 package weiboclock
 
 import (
+	"image/color"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestMergeClockPic(t *testing.T) {
@@ -17,7 +19,7 @@ func TestMergeClockPic(t *testing.T) {
 		t.Error(err)
 	}
 	defer icon.Close()
-	buffer, err := MergeClockPic(clock, icon, "jpg")
+	buffer, err := MergeClockPic(time.Now(), clock, icon, "jpg", color.RGBA{0, 0, 0, 255})
 	if err != nil {
 		t.Error(err)
 	}
