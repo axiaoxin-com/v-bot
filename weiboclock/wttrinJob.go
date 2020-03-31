@@ -38,7 +38,8 @@ func (clock *WeiboClock) wttrinRun() {
 
 	// 获取天气文本
 	log.Println("[DEBUG] wttrinRun start getting Line weather")
-	weather, err := wttrin.Line(lang, loc, "")
+	format := "当前%l:\n天气%c %C\n温度🌡️ %t\n风速🌬️ %w\n湿度💦 %h\n月相🌑 +%M%m"
+	weather, err := wttrin.Line(lang, loc, format)
 	if err == nil {
 		WttrInLine = weather
 		log.Println("[DEBUG] wttrinRun got the wttrin Line weather")

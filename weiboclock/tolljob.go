@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"unicode/utf8"
 
 	// 导入statik生成的代码
 	_ "cuitclock/statik"
@@ -41,12 +42,12 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 
 	text := fmt.Sprintf("%s %d点啦%s %s\n\n"+
 		"今日进度:\n%s\n\n"+
-		"%s%s\n\n",
+		"%s%s\n",
 		ClockEmoji[oclock], oclock, TollTail(oclock), emotion,
 		dayProcessBar,
-		WttrInLine, cityAstroInfo.Line(),
+		WttrInLine, cityAstroInfo,
 	)
-
+	log.Printf("[DEBUG] text:%s runecount:%d", text, utf8.RuneCountInString(text))
 	// 生成图片内容
 	pic, err := PicReader(viper.GetString("weiboclock.pic_path"), now)
 	if err != nil {
