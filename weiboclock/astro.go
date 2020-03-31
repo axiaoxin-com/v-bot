@@ -38,7 +38,11 @@ func GetAstroInfo(lng, lat float64, t time.Time) *AstroInfo {
 	}
 }
 
-func (a *AstroInfo) String() string {
+// Line 返回格式化信息
+func (a *AstroInfo) Line() string {
+	if a == nil {
+		return ""
+	}
 	return fmt.Sprintf("农历📆 %s\n"+
 		"日出🌅 %s\n"+
 		"日落🌄 %s\n",

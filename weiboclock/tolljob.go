@@ -44,7 +44,8 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 		"%s%s\n\n",
 		ClockEmoji[oclock], oclock, TollTail(oclock), emotion,
 		dayProcessBar,
-		WttrInLine, cityAstroInfo)
+		WttrInLine, cityAstroInfo.Line(),
+	)
 
 	// 生成图片内容
 	pic, err := PicReader(viper.GetString("weiboclock.pic_path"), now)
