@@ -17,16 +17,16 @@ var (
 )
 
 // 定时更新天气全局变量
-func wttrinJob() cronweibo.CronJob {
+func (clock *WeiboClock) wttrinJob() cronweibo.CronJob {
 	return cronweibo.CronJob{
 		Name:     "wttrin",
 		Schedule: viper.GetString("wttrin.refresh_schedule"),
-		Run:      wttrinRun,
+		Run:      clock.wttrinRun,
 	}
 }
 
 // 提前加载天气信息
-func wttrinRun() {
+func (clock *WeiboClock) wttrinRun() {
 	// reset
 	WttrInLine = ""
 	WttrInImage = nil

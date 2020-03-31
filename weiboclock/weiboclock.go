@@ -42,7 +42,7 @@ func (clock *WeiboClock) Run() {
 
 	// 注册获取wttrin天气信息的普通定时任务
 	// 整点请求wttrin响应大概率很慢或者会异常，导致报时延迟很大，提前五分钟获取天气保存在变量中，报时时直接从变量取值
-	clock.cronWeibo.RegisterCronJobs(wttrinJob())
+	clock.cronWeibo.RegisterCronJobs(clock.wttrinJob())
 
 	// 运行
 	clock.cronWeibo.Start()
