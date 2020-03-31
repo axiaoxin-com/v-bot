@@ -28,64 +28,71 @@ const (
 	CommunityLevel
 )
 
-// NewDB 创建sqlx DB实例
-func NewDB(host string, port int, user, passwd string) (*sqlx.DB, error) {
+// Query cnarea数据查询实例
+type Query struct {
+	db *sqlx.DB
+}
+
+// Close 关闭db连接
+func (q *Query) Close() {
+	q.db.Close()
+}
+
+// DB 获取sqlx db 实例
+func (q *Query) DB() *sqlx.DB {
+	return q.db
+}
+
+// NewQuery 创建sqlx DB实例
+func NewQuery(host string, port int, user, passwd string) (*Query, error) {
 	mydsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/cnarea?charset=utf8&parseTime=true", user, passwd, host, port)
 	db, err := sqlx.Open("mysql", mydsn)
 	if err != nil {
 		return nil, err
 	}
-	return db, nil
+	return &Query{db: db}, nil
 }
 
-// Province 查询指定省级、直辖市级区域、特别行政区级信息
-func Province(db *sqlx.DB, shortName string) (Area, error) {
+// ProvinceLevelArea 查询指定省级、直辖市级区域、特别行政区级的区域信息
+func (q *Query) ProvinceLevelArea(areaShortName string) (Area, error) {
 	area := Area{}
-	if err := db.Get(&area, "select * from cnarea_2018 where level = ? and short_name = ?", ProvinceLevel, shortName); err != nil {
+	if err := q.db.Get(&area, "select * from cnarea_2018 where level = ? and short_name = ?", ProvinceLevel, areaShortName); err != nil {
 		return area, err
 	}
 	return area, nil
 }
 
-// Provinces 查询指定省级、直辖市级区域、特别行政区级列表
-func Provinces(db *sqlx.DB) ([]Area, error) {
+// ProvinceLevelAreas 查询所有省级+直辖市级+特别行政区级的区域信息列表
+func (q *Query) ProvinceLevelAreas() ([]Area, error) {
 	areas := []Area{}
-	if err := db.Select(&areas, "select * from cnarea_2018 where level = ?", ProvinceLevel); err != nil {
+	if err := q.db.Select(&areas, "select * from cnarea_2018 where level = ?", ProvinceLevel); err != nil {
 		return nil, err
 	}
 	return areas, nil
 }
 
-// City 查询指定市级、直辖区级信息
-func City(db *sqlx.DB, shortName string) (Area, error) {
+// CityLevelArea 查询指定市级、直辖区级的区域信息
+func (q *Query) CityLevelArea(areaShortName string) (Area, error) {
 	area := Area{}
-	if err := db.Get(&area, "select * from cnarea_2018 where level = ? and short_name = ?", CityLevel, shortName); err != nil {
+	if err := q.db.Get(&area, "select * from cnarea_2018 where level = ? and short_name = ?", CityLevel, areaShortName); err != nil {
 		return area, err
 	}
 	return area, nil
 }
 
-// Cities 查询指定省级、直辖市级区域、特别行政区级下的城市列表
-func Cities(db *sqlx.DB, proviceShortName string) ([]Area, error) {
+// CityLevelAreas 查询指定省级、直辖市级、特别行政区级区域下的所有市级、直辖区级的区域信息列表
+func (q *Query) CityLevelAreas(areaShortName string) ([]Area, error) {
 	areas := []Area{}
-	provinceArea, err := Province(db, proviceShortName)
-	if err != nil {
-		return nil, err
-	}
-	if err := db.Select(&areas, "select * from cnarea_2018 where level = ? and parent_code = ?", CityLevel, provinceArea.AreaCode); err != nil {
+	if err := q.db.Select(&areas, "select * from cnarea_2018 where level = ? and parent_code = (select area_code from cnarea_2018 where level = ? and short_name = ?)", CityLevel, ProvinceLevel, areaShortName); err != nil {
 		return nil, err
 	}
 	return areas, nil
 }
 
-// Districts 查询指定市级下的区列表
-func Districts(db *sqlx.DB, cityShortName string) ([]Area, error) {
+// DistrictLevelAreas 查询指定市级区域下的所有区级区域信息列表
+func (q *Query) DistrictLevelAreas(areaShortName string) ([]Area, error) {
 	areas := []Area{}
-	cityArea, err := City(db, cityShortName)
-	if err != nil {
-		return nil, err
-	}
-	if err := db.Select(&areas, "select * from cnarea_2018 where level = ? and parent_code = ?", DistrictLevel, cityArea.AreaCode); err != nil {
+	if err := q.db.Select(&areas, "select * from cnarea_2018 where level = ? and parent_code = (select area_code from cnarea_2018 where level = ? and short_name = ?)", DistrictLevel, CityLevel, areaShortName); err != nil {
 		return nil, err
 	}
 	return areas, nil

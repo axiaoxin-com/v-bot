@@ -4,66 +4,70 @@ import (
 	"log"
 	"testing"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/spf13/viper"
 )
 
-func new() *sqlx.DB {
+func new() *Query {
 	viper.AddConfigPath("..")
 	viper.SetConfigName("config")
 	viper.ReadInConfig()
 
-	db, err := NewDB(viper.GetString("mysql.host"), viper.GetInt("mysql.port"), viper.GetString("mysql.user"), viper.GetString("mysql.passwd"))
+	q, err := NewQuery(viper.GetString("mysql.host"), viper.GetInt("mysql.port"), viper.GetString("mysql.user"), viper.GetString("mysql.passwd"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	return db
+	return q
 }
 
-func TestProvince(t *testing.T) {
-	db := new()
-	defer db.Close()
-	p, err := Province(db, "四川")
+func TestProvinceLevelArea(t *testing.T) {
+	q := new()
+	defer q.Close()
+	// 查询四川省区域信息
+	p, err := q.ProvinceLevelArea("四川")
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log(p)
 }
 
-func TestProvinces(t *testing.T) {
-	db := new()
-	defer db.Close()
-	p, err := Provinces(db)
+func TestProvinceLevelAreas(t *testing.T) {
+	q := new()
+	defer q.Close()
+	// 查询全国所有省+直辖市+特别行政区区域信息列表
+	p, err := q.ProvinceLevelAreas()
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log(p)
 }
 
-func TestCity(t *testing.T) {
-	db := new()
-	defer db.Close()
-	p, err := City(db, "成都")
+func TestCityLevelArea(t *testing.T) {
+	q := new()
+	defer q.Close()
+	// 查询成都市区域信息
+	p, err := q.CityLevelArea("成都")
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log(p)
 }
 
-func TestCities(t *testing.T) {
-	db := new()
-	defer db.Close()
-	p, err := Cities(db, "四川")
+func TestCityLevelAreas(t *testing.T) {
+	q := new()
+	defer q.Close()
+	// 查询四川省所有市级区域信息列表
+	p, err := q.CityLevelAreas("四川")
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log(p)
 }
 
-func TestDistricts(t *testing.T) {
-	db := new()
-	defer db.Close()
-	p, err := Districts(db, "成都")
+func TestDistrictLevelAreas(t *testing.T) {
+	q := new()
+	defer q.Close()
+	// 查询成都市所有区县级区域信息列表
+	p, err := q.DistrictLevelAreas("成都")
 	if err != nil {
 		t.Error(err)
 	}
