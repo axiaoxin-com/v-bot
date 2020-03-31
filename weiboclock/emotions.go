@@ -9,12 +9,13 @@ import (
 )
 
 var (
-	// TollVoices 钟楼报时声音
-	TollVoices = []string{
-		"biu! ", "ha! ", "mua~ ", "dang! ", "ho! ", "hei! ", "pia! ", "dong~ ",
-		"he! ", "mia~ ", "ao~ ", "do~ ", "ga~ ", "bi! ", "ba~ ", "ma~ ", "miao~ ",
-		"pa! ", "no~ ", "bomb! ", "yeah~ ", "ka! ", "la~ ", "da! ", "OA! ", "meow~ ",
+	// TollTails 标点小尾巴
+	TollTails = []string{
+		"!", "~", ".", "?",
 	}
+
+	// ClockEmoji 整点emoji
+	ClockEmoji = []string{"🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"}
 
 	// TextEmotions 颜文字表情
 	TextEmotions = []string{
@@ -52,11 +53,11 @@ func PickOneEmotion() string {
 	return Emotions[rand.Intn(len(Emotions))]
 }
 
-// TollVoice 报时拟声
-func TollVoice(count int) string {
+// TollTail 随机获取标点小尾巴~
+func TollTail(count int) string {
 	rand.Seed(time.Now().Unix())
-	voice := TollVoices[rand.Intn(len(TollVoices))]
-	return strings.Repeat(voice, count)
+	tail := TollTails[rand.Intn(len(TollTails))]
+	return strings.Repeat(tail, count)
 }
 
 // InitEmotions 初始化表情，返回表情总数

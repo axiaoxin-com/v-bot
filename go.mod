@@ -14,7 +14,8 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.7
+	github.com/schollz/progressbar/v2 v2.15.0
 	github.com/spf13/viper v1.6.2
-	github.com/starainrt/astro v0.0.0-20200211034612-54723046bbe4 // indirect
+	github.com/starainrt/astro v0.0.0-20200211034612-54723046bbe4
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1 // indirect
 )

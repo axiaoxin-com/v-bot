@@ -27,15 +27,24 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	now := clock.cronWeibo.Now()
 	emotion := PickOneEmotion()
 	log.Println("[DEBUG] tollRun picked emotion", emotion)
+	// 24 小时制时刻
 	hour := now.Hour()
-	oclock := hour
-	// 12小时制处理
-	if hour > 12 {
-		oclock = hour - 12
-	} else if hour == 0 {
-		oclock = 12
+	// 12 小时制时刻
+	oclock := hour % 12
+	// 今日使用进度
+	dayProcessBar := DayProgressBar(hour)
+	// 天文信息
+	cityAstroInfo, err := CityAstroInfo(viper.GetString("wttrin.location"), now)
+	if err != nil {
+		log.Println("[ERROR] weiboclock tollJob CityAstroInfo error", err)
 	}
-	text := fmt.Sprintf("%d点啦~ %s %s\n\n%s\n", oclock, emotion, TollVoice(oclock), WttrInLine)
+
+	text := fmt.Sprintf("%s %d点啦%s %s\n\n"+
+		"今日进度:\n%s\n\n"+
+		"%s%s\n\n",
+		ClockEmoji[oclock], oclock, TollTail(oclock), emotion,
+		dayProcessBar,
+		WttrInLine, cityAstroInfo)
 
 	// 生成图片内容
 	pic, err := PicReader(viper.GetString("weiboclock.pic_path"), now)
