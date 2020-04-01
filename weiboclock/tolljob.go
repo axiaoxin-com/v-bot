@@ -32,6 +32,9 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	hour := now.Hour()
 	// 12 小时制时刻
 	oclock := hour % 12
+	if oclock == 0 {
+		oclock = 12
+	}
 	// 今日使用进度
 	dayProcessBar := DayProgressBar(hour)
 	// 天文信息
@@ -41,7 +44,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	}
 
 	text := fmt.Sprintf("%s %d点啦%s %s\n\n"+
-		"今日进度:\n%s\n\n"+
+		"您的今日使用进度:\n%s\n\n"+
 		"%s%s\n",
 		ClockEmoji[oclock], oclock, TollTail(oclock), emotion,
 		dayProcessBar,

@@ -49,6 +49,12 @@ func Moonset(lng, lat float64, t time.Time) time.Time {
 	return moonset
 }
 
+// GetWeekday 获取周几
+func GetWeekday(t time.Time) string {
+	weekdays := []string{"周日", "周一", "周二", "周三", "周四", "周五", "周六"}
+	return weekdays[int(t.Weekday())]
+}
+
 // CityAstroInfo 根据城市名称获取当地指定时间天文信息
 func CityAstroInfo(cityname string, t time.Time) (string, error) {
 	q, err := cnarea.NewQuery(viper.GetString("mysql.host"), viper.GetInt("mysql.port"), viper.GetString("mysql.user"), viper.GetString("mysql.passwd"))
@@ -59,10 +65,10 @@ func CityAstroInfo(cityname string, t time.Time) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	info := fmt.Sprintf("农历📅 %s\n"+
+	info := fmt.Sprintf("农历📅 %s %s\n"+
 		"日出🌅 %s\n"+
 		"日落🌄 %s",
-		Lunar(t),
+		Lunar(t), GetWeekday(t),
 		Sunrise(city.Lng, city.Lat, t).Format("15:04:05"),
 		Sunset(city.Lng, city.Lat, t).Format("15:04:05"),
 	)
