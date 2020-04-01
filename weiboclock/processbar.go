@@ -2,7 +2,9 @@ package weiboclock
 
 import (
 	"log"
+	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/schollz/progressbar/v2"
 )
@@ -10,8 +12,18 @@ import (
 // ProgressBar 返回静态进度条
 func ProgressBar(width, total, current int) string {
 	buf := strings.Builder{}
-	theme := progressbar.Theme{Saucer: "🤍", SaucerHead: "", SaucerPadding: "❤️", BarStart: "", BarEnd: ""}
-	// theme := progressbar.Theme{Saucer: "░", SaucerHead: "", SaucerPadding: "▒", BarStart: "", BarEnd: ""}
+	saucerAndPaddings := [][]string{
+		{"░", "▒"},
+		{"⬛️", "⬜️"},
+		{"❌", "⭕️"},
+		{"⚫️", "⚪️"},
+		{"🖤", "🤍"},
+		{"🤍", "❤️"},
+	}
+	rand.Seed(time.Now().Unix())
+	saucerAndPadding := saucerAndPaddings[rand.Intn(len(saucerAndPaddings))]
+
+	theme := progressbar.Theme{Saucer: saucerAndPadding[0], SaucerHead: "", SaucerPadding: saucerAndPadding[1], BarStart: "", BarEnd: ""}
 	bar := progressbar.NewOptions(
 		total,
 		progressbar.OptionSetTheme(theme),
