@@ -1,7 +1,12 @@
 // Package reminder 微博提醒事项
 package reminder
 
-import "github.com/axiaoxin-com/cronweibo"
+import (
+	"strings"
+
+	"github.com/axiaoxin-com/cronweibo"
+	"github.com/spf13/viper"
+)
 
 // Reminder 实例对象
 type Reminder struct {
@@ -27,7 +32,23 @@ func New(cfg *cronweibo.Config) (*Reminder, error) {
 func (r *Reminder) Run() {
 	// 注册天气变化提醒任务
 	r.cronWeibo.RegisterWeiboJobs(r.weatherJob())
+	// 注册称体重提醒任务
+	r.cronWeibo.RegisterWeiboJobs(r.weightJob())
 
 	// 运行
 	r.cronWeibo.Start()
+}
+
+// RemindStr 获取微博提醒昵称列表，空格分隔
+func (r *Reminder) RemindStr() string {
+	nicknameList := strings.Fields(viper.GetString("reminder.remind_list"))
+	remindList := []string{}
+	for _, nickname := range nicknameList {
+		if !strings.HasPrefix(nickname, "@") {
+			remindList = append(remindList, "@"+nickname)
+		} else {
+			remindList = append(remindList, nickname)
+		}
+	}
+	return strings.Join(remindList, " ")
 }
