@@ -1,10 +1,10 @@
 package main
 
 import (
-	"cuitclock/config"
-	"cuitclock/weiboclock"
 	"log"
 	"time"
+	"v-bot/config"
+	"v-bot/weiboclock"
 
 	"github.com/axiaoxin-com/chaojiying"
 	"github.com/axiaoxin-com/cronweibo"
@@ -66,6 +66,6 @@ func runWeiboClock() {
 
 func main() {
 	config.InitConfig()
-	log.Println("[INFO] cuitclock inited config.")
+	log.Println("[INFO] v-bot inited config.")
 	runWeiboClock()
 }

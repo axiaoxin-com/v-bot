@@ -1,9 +1,9 @@
 package weiboclock
 
 import (
-	"cuitclock/cnarea"
 	"fmt"
 	"time"
+	"v-bot/cnarea"
 
 	"github.com/spf13/viper"
 	"github.com/starainrt/astro"

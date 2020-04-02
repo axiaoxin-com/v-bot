@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	// 导入statik生成的代码
-	_ "cuitclock/statik"
+	_ "v-bot/statik"
 
 	"github.com/rakyll/statik/fs"
 )

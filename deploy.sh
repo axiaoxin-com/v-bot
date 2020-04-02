@@ -1,6 +1,6 @@
 mv config.toml config.toml.bak
-mv cuitclock cuitclock.bak
-tar xzf cuitclock.tar.gz
+mv v-bot v-bot.bak
+tar xzf v-bot.tar.gz
 mv config.toml.build config.toml
-supervisorctl restart cuitclock
-tail -f /var/log/cuitclock.log
+supervisorctl restart v-bot
+tail -f /var/log/v-bot.log

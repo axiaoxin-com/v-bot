@@ -7,7 +7,7 @@ import (
 	"unicode/utf8"
 
 	// 导入statik生成的代码
-	_ "cuitclock/statik"
+	_ "v-bot/statik"
 
 	"github.com/axiaoxin-com/cronweibo"
 	"github.com/spf13/viper"

@@ -1,4 +1,4 @@
-module cuitclock
+module v-bot
 
 go 1.13
 
