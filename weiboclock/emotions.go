@@ -28,10 +28,10 @@ func PickOneEmotion() string {
 }
 
 // TollTail 随机获取标点小尾巴~
-func TollTail(count int) string {
+func TollTail(repeat int) string {
 	rand.Seed(time.Now().UnixNano())
 	tail := TollTails[rand.Intn(len(TollTails))]
-	return strings.Repeat(tail, count)
+	return strings.Repeat(tail, repeat)
 }
 
 // InitEmotions 初始化表情，返回表情总数
