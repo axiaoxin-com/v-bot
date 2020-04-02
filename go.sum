@@ -13,6 +13,8 @@ github.com/axiaoxin-com/chaojiying v1.0.0 h1:WAQKdgGAEOwTICsntPhVao7ypkBNxTby08L
 github.com/axiaoxin-com/chaojiying v1.0.0/go.mod h1:BGqgy6Crn22Z4Lc0XnSrTGyItu9cWCj6qea6C4ShCHU=
 github.com/axiaoxin-com/cronweibo v1.0.3-0.20200331182653-e7aef3017d68 h1:pB9Bqzx6pZCzmbzkX08OlKRMLMCcL//RedZ4wq9VbyI=
 github.com/axiaoxin-com/cronweibo v1.0.3-0.20200331182653-e7aef3017d68/go.mod h1:3W2YzScDET1B2aYPFSmzL67mipgshG453/jhej1FrHk=
+github.com/axiaoxin-com/cronweibo v1.0.3-0.20200402135132-c1a10ff2578b h1:stUABz1dRVWHaF9JcH6Fh6KN0Qr3kC1cUS+RPppFOzg=
+github.com/axiaoxin-com/cronweibo v1.0.3-0.20200402135132-c1a10ff2578b/go.mod h1:3W2YzScDET1B2aYPFSmzL67mipgshG453/jhej1FrHk=
 github.com/axiaoxin-com/weibo v1.0.1-0.20200328050552-c0cfe4857406/go.mod h1:k/bAOI57WyB1ATE/+7rh4SkmkfR9MOvynkdyoyuIJco=
 github.com/axiaoxin-com/weibo v1.0.3 h1:35l+DAH1vQj8Sy70Dd9cNteAuLq6sN6Fe8u/8EfwuO8=
 github.com/axiaoxin-com/weibo v1.0.3/go.mod h1:k/bAOI57WyB1ATE/+7rh4SkmkfR9MOvynkdyoyuIJco=

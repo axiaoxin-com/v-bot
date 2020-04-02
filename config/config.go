@@ -26,8 +26,6 @@ func InitConfig(paths ...string) {
 		viper.AddConfigPath(p)
 	}
 
-	viper.SetDefault("weiboclock.timezone", "Asia/Shanghai")
-
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal("[FATAL] viper ReadInConfig error", err)
 	}

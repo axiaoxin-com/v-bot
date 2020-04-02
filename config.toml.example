@@ -1,4 +1,18 @@
-# 微博钟楼相关配置
+
+# 超级鹰验证码破解账号
+[chaojiying]
+accounts_json_path = "保存账号信息的json文件路径"
+
+
+# MySQL数据库配置
+[mysql]
+host = ""
+port = 3306
+user = ""
+passwd = ""
+
+
+# app 成信钟楼相关配置
 [weiboclock]
 timezone = "Asia/Shanghai"  # 定时任务时区配置
 webapi_addr = ":1733"  # http服务运行地址
@@ -23,7 +37,24 @@ wttrin_location = "天气预报的地点"
 wttrin_refresh_schedule = "0 58 * * * *"  # 在整点前2分钟更新天气，整点的wttrin服务不稳定
 
 
-# 超级鹰验证码破解账号
-[chaojiying]
-accounts_json_path = "保存账号信息的json文件路径"
+# app reminder相关配置 （大致同上）
+[reminder]
+timezone = "Asia/Shanghai"
+webapi_addr = ":2109"
+basic_auth_username = ""
+basic_auth_passwd = ""
+# 微博账号信息相关配置
+app_key = ""
+app_secret = ""
+redirect_uri = ""
+username = ""
+passwd = ""
+security_url = ""
+wttrin_lang = ""
+wttrin_location = ""
+wttrin_refresh_schedule = ""
 
+test_username = ""
+test_passwd = ""
+
+remind_list = ""  # 被提醒人微博昵称 多个空格分隔
