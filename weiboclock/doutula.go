@@ -53,7 +53,7 @@ func DoutulaSearch(keyword string, page int) ([]string, error) {
 
 // PickOnePicFromURLs 从给定的图片url中随机获取一张图片
 func PickOnePicFromURLs(picURLs []string) (io.ReadCloser, string, error) {
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UnixNano())
 	picURL := picURLs[rand.Intn(len(picURLs))]
 	log.Println("[DEBUG] weiboclock PickOnePicFromURLs picURL:", picURL)
 	picURLSplited := strings.Split(picURL, ".")

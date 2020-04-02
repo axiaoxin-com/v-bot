@@ -22,7 +22,7 @@ func RandFont() (*truetype.Font, error) {
 		}
 		return nil
 	})
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UnixNano())
 	fontPath := fontPaths[rand.Intn(len(fontPaths))]
 	log.Println("[DEBUG] weiboclock RandFont use font", fontPath)
 	fontFile, err := StatikFS.Open(fontPath)
