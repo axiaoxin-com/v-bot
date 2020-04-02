@@ -20,7 +20,7 @@ var (
 func (clock *WeiboClock) wttrinJob() cronweibo.CronJob {
 	return cronweibo.CronJob{
 		Name:     "wttrin",
-		Schedule: viper.GetString("wttrin.refresh_schedule"),
+		Schedule: viper.GetString("weiboclock.wttrin_refresh_schedule"),
 		Run:      clock.wttrinRun,
 	}
 }
@@ -32,9 +32,9 @@ func (clock *WeiboClock) wttrinRun() {
 	WttrInImage = nil
 
 	// 默认在整点前5分钟更新天气
-	viper.SetDefault("wttrin.refresh_schedule", "0 55 * * * *")
-	lang := viper.GetString("wttrin.lang")
-	loc := viper.GetString("wttrin.location")
+	viper.SetDefault("weiboclock.wttrin_refresh_schedule", "0 55 * * * *")
+	lang := viper.GetString("weiboclock.wttrin_lang")
+	loc := viper.GetString("weiboclock.wttrin_location")
 
 	// 获取天气文本
 	log.Println("[DEBUG] wttrinRun start getting Line weather")

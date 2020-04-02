@@ -15,26 +15,26 @@ import (
 // 运行微博上的成信钟楼
 func runWeiboClock() {
 	// 初始化 weiboclock 的配置
-	location, err := time.LoadLocation(viper.GetString("weiboclock.location"))
+	location, err := time.LoadLocation(viper.GetString("weiboclock.timezone"))
 	if err != nil {
 		log.Fatalln("[FATAL] Load location error:", err)
 	}
-	username := viper.GetString("weibo.username")
-	passwd := viper.GetString("weibo.passwd")
-	tusername := viper.GetString("weibo.test_username")
-	tpasswd := viper.GetString("weibo.test_passwd")
+	username := viper.GetString("weiboclock.username")
+	passwd := viper.GetString("weiboclock.passwd")
+	tusername := viper.GetString("weiboclock.test_username")
+	tpasswd := viper.GetString("weiboclock.test_passwd")
 	if tusername != "" && tpasswd != "" {
 		username = tusername
 		passwd = tpasswd
 		log.Println("[WARN] weiboClock will run with test account")
 	}
 	wcCfg := &cronweibo.Config{
-		WeiboAppkey:        viper.GetString("weibo.app_key"),
-		WeiboAppsecret:     viper.GetString("weibo.app_secret"),
+		WeiboAppkey:        viper.GetString("weiboclock.app_key"),
+		WeiboAppsecret:     viper.GetString("weiboclock.app_secret"),
 		WeiboUsername:      username,
 		WeiboPasswd:        passwd,
-		WeiboRedirecturi:   viper.GetString("weibo.redirect_uri"),
-		WeiboSecurityURL:   viper.GetString("weibo.security_url"),
+		WeiboRedirecturi:   viper.GetString("weiboclock.redirect_uri"),
+		WeiboSecurityURL:   viper.GetString("weiboclock.security_url"),
 		WeiboPinCrackFuncs: []weibo.CrackPinFunc{},
 		HTTPServerAddr:     viper.GetString("weiboclock.webapi_addr"),
 		BasicAuthUsername:  viper.GetString("weiboclock.basic_auth_username"),

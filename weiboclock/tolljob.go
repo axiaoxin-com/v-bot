@@ -38,7 +38,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	// 今日使用进度
 	dayProcessBar := DayProgressBar(now)
 	// 天文信息
-	cityAstroInfo, err := CityAstroInfo(viper.GetString("wttrin.location"), now)
+	cityAstroInfo, err := CityAstroInfo(viper.GetString("weiboclock.wttrin_location"), now)
 	if err != nil {
 		log.Println("[ERROR] weiboclock tollJob CityAstroInfo error", err)
 	}
