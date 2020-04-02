@@ -50,9 +50,14 @@ redirect_uri = ""
 username = ""
 passwd = ""
 security_url = ""
+# 天气提醒
 wttrin_lang = ""
 wttrin_location = ""
-wttrin_refresh_schedule = ""
+wttrin_schedule = ""
+# 称体重提醒
+weight_schedule = ""
+# 今年进度提醒
+yearbar_schedule = ""
 
 test_username = ""
 test_passwd = ""

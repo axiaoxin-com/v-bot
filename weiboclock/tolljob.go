@@ -6,6 +6,8 @@ import (
 	"log"
 	"unicode/utf8"
 
+	"v-bot/progressbar"
+
 	// 导入statik生成的代码
 	_ "v-bot/statik"
 
@@ -36,7 +38,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 		oclock = 12
 	}
 	// 今日使用进度
-	dayProcessBar := DayProgressBar(now)
+	dayProcessBar := progressbar.DayProgressBar(now)
 	// 天文信息
 	cityAstroInfo, err := CityAstroInfo(viper.GetString("weiboclock.wttrin_location"), now)
 	if err != nil {

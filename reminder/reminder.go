@@ -34,6 +34,8 @@ func (r *Reminder) Run() {
 	r.cronWeibo.RegisterWeiboJobs(r.weatherJob())
 	// 注册称体重提醒任务
 	r.cronWeibo.RegisterWeiboJobs(r.weightJob())
+	// 注册称今年使用进度提醒任务
+	r.cronWeibo.RegisterWeiboJobs(r.yearbarJob())
 
 	// 运行
 	r.cronWeibo.Start()
