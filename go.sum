@@ -24,6 +24,8 @@ github.com/axiaoxin-com/weibo v1.0.3 h1:35l+DAH1vQj8Sy70Dd9cNteAuLq6sN6Fe8u/8Efw
 github.com/axiaoxin-com/weibo v1.0.3/go.mod h1:k/bAOI57WyB1ATE/+7rh4SkmkfR9MOvynkdyoyuIJco=
 github.com/axiaoxin-com/wttrin v0.0.0-20200330122930-b0dbac4ef2d3 h1:ffmvMXRiNam57TdW/tBZjoMi0gPoicd9IRgDCdzO2VY=
 github.com/axiaoxin-com/wttrin v0.0.0-20200330122930-b0dbac4ef2d3/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
+github.com/axiaoxin-com/wttrin v0.0.0-20200405080705-9c5c96889b41 h1:tXpvfXhkrzomxuCEM5QOhP2raAz+FSMFt4G4H2YeqYU=
+github.com/axiaoxin-com/wttrin v0.0.0-20200405080705-9c5c96889b41/go.mod h1:jA/DZ9zQk+5A0zEt6jI1aM7bx4IPWzUuiyD6VVTzHlc=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
