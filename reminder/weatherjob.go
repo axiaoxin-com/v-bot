@@ -11,8 +11,8 @@ import (
 )
 
 func init() {
-	// 默认每天6点半和17点半预报预报天气
-	viper.SetDefault("reminder.wttrin_schedule", "0 30 6,17 * * *")
+	// 默认每天 6 点半和 17 点半预报预报天气
+	viper.SetDefault("reminder.wttrin_schedule", "30 6,17 * * *")
 }
 
 // 定时更新天气全局变量

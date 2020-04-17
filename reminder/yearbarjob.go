@@ -10,8 +10,8 @@ import (
 )
 
 func init() {
-	// 默认每月第一天早上9点提醒今年时间进度
-	viper.SetDefault("reminder.yearbar_schedule", "0 0 9 1 * *")
+	// 默认每月第一天早上 9 点提醒今年时间进度
+	viper.SetDefault("reminder.yearbar_schedule", "0 9 1 * *")
 }
 
 // 定时提醒今年时间进度条
@@ -23,7 +23,7 @@ func (r *Reminder) yearbarJob() cronweibo.WeiboJob {
 	}
 }
 
-// 生成yearbar
+// 生成 yearbar
 func (r *Reminder) yearbarRun() (string, io.Reader) {
 	remindStr := r.RemindStr()
 	now := r.cronWeibo.Now()

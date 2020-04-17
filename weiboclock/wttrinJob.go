@@ -31,8 +31,8 @@ func (clock *WeiboClock) wttrinRun() {
 	WttrInLine = ""
 	WttrInImage = nil
 
-	// 默认在整点前5分钟更新天气
-	viper.SetDefault("weiboclock.wttrin_refresh_schedule", "0 55 * * * *")
+	// 默认在整点前 5 分钟更新天气
+	viper.SetDefault("weiboclock.wttrin_refresh_schedule", "55 * * * *")
 	lang := viper.GetString("weiboclock.wttrin_lang")
 	loc := viper.GetString("weiboclock.wttrin_location")
 

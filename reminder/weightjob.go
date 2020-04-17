@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	// 默认每月第1天早上8点提醒称体重
-	viper.SetDefault("reminder.weight_schedule", "0 0 8 1 * *")
+	// 默认每月第 1 天早上 8 点提醒称体重
+	viper.SetDefault("reminder.weight_schedule", "0 8 1 * *")
 }
 
 // 定时提醒称体重
