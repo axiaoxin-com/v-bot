@@ -12,6 +12,7 @@ import (
 	_ "v-bot/statik"
 
 	"github.com/axiaoxin-com/cronweibo"
+	"github.com/axiaoxin-com/wttrin"
 	"github.com/spf13/viper"
 )
 
@@ -44,13 +45,22 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 	if err != nil {
 		log.Println("[ERROR] weiboclock tollJob CityAstroInfo error", err)
 	}
+	lang := viper.GetString("weiboclock.wttrin_lang")
+	loc := viper.GetString("weiboclock.wttrin_location")
+	format := "当前%l:\n天气%c %C\n温度🌡️ %t\n风速🌬️ %w\n湿度💦 %h\n月相🌑 +%M%m"
+	weather, err := wttrin.Line(lang, loc, format)
+	if err != nil {
+		log.Println("[ERROR] weiboclock tollJob weather error", err)
+	}
 
 	text := fmt.Sprintf("%s %d点啦%s %s\n\n"+
 		"你的今日使用进度:\n%s\n\n"+
-		"%s%s",
+		"%s"+
+		"%s",
 		ClockEmoji[oclock], oclock, TollTail(1), emotion,
 		dayProcessBar,
-		WttrInLine, cityAstroInfo,
+		weather,
+		cityAstroInfo,
 	)
 	log.Printf("[DEBUG] text:%s runecount:%d", text, utf8.RuneCountInString(text))
 	// 生成图片内容

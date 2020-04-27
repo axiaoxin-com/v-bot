@@ -113,27 +113,19 @@ func CenterPic(hour int) (io.ReadCloser, string, color.RGBA) {
 	centerPic := io.ReadCloser(icon)
 	defer centerPic.Close()
 
-	// 尝试1. 使用天气图片作为中心位置图片
-	if WttrInImage != nil {
-		centerPic = WttrInImage
-		centerPicFormat = "png"
-		centerPicBgColor = color.RGBA{0, 0, 0, 255} // 黑色背景
-	} else {
-		// 尝试2. 天气图片尝试失败则尝试使用斗图啦表情
-		log.Println("[WARN] PicReader get a nil WttrInImage, try to use doutulaPic")
-		if picURLs, err := DoutulaSearch(strconv.Itoa(hour), 1); err == nil {
-			// 成功搜索表情包后随机选择一个表情图片
-			if doutulaPic, doutulaPicFormat, err := PickOnePicFromURLs(picURLs); err == nil {
-				// 成功获取到随机表情图片后设置其为centerPic
-				// 背景采用默认的白色
-				centerPic = doutulaPic
-				centerPicFormat = doutulaPicFormat
-			} else {
-				log.Println("[ERROR] PicReader PickOnePicFromURLs error", err)
-			}
+	// 尝试使用斗图啦表情
+	if picURLs, err := DoutulaSearch(strconv.Itoa(hour), 1); err == nil {
+		// 成功搜索表情包后随机选择一个表情图片
+		if doutulaPic, doutulaPicFormat, err := PickOnePicFromURLs(picURLs); err == nil {
+			// 成功获取到随机表情图片后设置其为centerPic
+			// 背景采用默认的白色
+			centerPic = doutulaPic
+			centerPicFormat = doutulaPicFormat
 		} else {
-			log.Println("[ERROR] PicReader DoutulaSearch error", err)
+			log.Println("[ERROR] PicReader PickOnePicFromURLs error", err)
 		}
+	} else {
+		log.Println("[ERROR] PicReader DoutulaSearch error", err)
 	}
 	return centerPic, centerPicFormat, centerPicBgColor
 }
