@@ -114,7 +114,7 @@ func CenterPic(hour int) (io.ReadCloser, string, color.RGBA) {
 	defer centerPic.Close()
 
 	// 尝试1. 使用天气图片作为中心位置图片
-	if WttrInImage != nil && WttrInLine != "" {
+	if WttrInImage != nil {
 		centerPic = WttrInImage
 		centerPicFormat = "png"
 		centerPicBgColor = color.RGBA{0, 0, 0, 255} // 黑色背景
