@@ -1,6 +1,7 @@
 package weiboclock
 
 import (
+	"image/png"
 	"io"
 	"log"
 
@@ -53,6 +54,10 @@ func (clock *WeiboClock) wttrinRun() {
 	if err == nil {
 		WttrInImage = img
 		log.Println("[DEBUG] wttrinRun got the wttrin Image weather")
+		if _, err := png.Decode(WttrInImage); err != nil {
+			WttrInImage = nil
+			log.Println("[ERROR] wttrinRun get an invalid png pic", err)
+		}
 	} else {
 		log.Println("[ERROR] wrttinRun get image weather error", err)
 	}
