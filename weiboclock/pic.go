@@ -72,9 +72,7 @@ func PicReader(path string, now time.Time) (io.Reader, error) {
 		// 将中心图片融合到表盘中央
 		mergedPic, err := MergeClockPic(now, clockPic, centerPic, centerPicFormat, centerPicBgColor)
 		if err != nil {
-			// 融合失败则直接返回表盘背景图片
-			log.Println("[ERROR] weiboclock PicReader MergeClockPic error:", err)
-			return clockPic, nil
+			return nil, errors.Wrap(err, "weiboclock PicReader MergeClockPic error")
 		}
 		return mergedPic, nil
 	default:
