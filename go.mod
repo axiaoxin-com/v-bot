@@ -8,7 +8,7 @@ require (
 	github.com/axiaoxin-com/cronweibo v1.0.3-0.20200417044053-ea2378ef7870
 	github.com/axiaoxin-com/logging v0.0.0-20200427085200-a4c4130686e8 // indirect
 	github.com/axiaoxin-com/weibo v1.0.4-0.20200417020754-43093843ceb1
-	github.com/axiaoxin-com/wttrin v0.0.0-20200405080705-9c5c96889b41
+	github.com/axiaoxin-com/wttrin v0.0.0-20200507062543-ae729320293f
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
