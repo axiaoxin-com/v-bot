@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 	"v-bot/config"
@@ -26,7 +27,7 @@ func runWeiboClock(cracker *chaojiying.Client) {
 	}
 	location, err := time.LoadLocation(timezone)
 	if err != nil {
-		log.Fatalln("[FATAL] Load location error:", err)
+		panic(err)
 	}
 	username := viper.GetString("weiboclock.username")
 	passwd := viper.GetString("weiboclock.passwd")
@@ -58,7 +59,7 @@ func runWeiboClock(cracker *chaojiying.Client) {
 	// 运行weiboclock
 	weiboClock, err := weiboclock.New(wcCfg)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	weiboClock.Run()
 }
@@ -103,7 +104,7 @@ func runReminder(cracker *chaojiying.Client) {
 	// 运行reminder
 	r, err := reminder.New(wcCfg)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	r.Run()
 }
@@ -129,6 +130,12 @@ func cracker() *chaojiying.Client {
 }
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+			select {}
+		}
+	}()
 	config.InitConfig()
 	log.Println("[INFO] v-bot inited config.")
 	c := cracker()
