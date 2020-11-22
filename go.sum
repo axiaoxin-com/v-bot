@@ -38,6 +38,12 @@ github.com/axiaoxin-com/chaojiying v1.0.0 h1:WAQKdgGAEOwTICsntPhVao7ypkBNxTby08L
 github.com/axiaoxin-com/chaojiying v1.0.0/go.mod h1:BGqgy6Crn22Z4Lc0XnSrTGyItu9cWCj6qea6C4ShCHU=
 github.com/axiaoxin-com/cronweibo v1.0.3 h1:fmPymZP2/0FXBRW8nd0+tkgBNJahvzeuKKwmz507xIY=
 github.com/axiaoxin-com/cronweibo v1.0.3/go.mod h1:qNWIZk7rsIXLn/27OjF+oPDGAZR8i4ypGPTQ2be2aHM=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122142558-943a610942da h1:XSZDS2vE7PrfmAniGFVAjrrDjxO5uVfF6NyaTM3DL1o=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122142558-943a610942da/go.mod h1:90PDPrWVLoBVD8H1QdYgrPpD6FwQTmNGgyqWaV+wX2w=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122143033-46d9d64d9faf h1:OVV4jUHzIIvFL9sYjZ+fv2mi+kvha/RDrbYK1OIASeI=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122143033-46d9d64d9faf/go.mod h1:Djk3pL6noT5lvixeB1/WDpHV4QqtkwaTZc+6WdJlzsU=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122144205-a474a46a06c2 h1:0eNlWQMQGYzeopHn41diVOTGkdWh0AFvBg46cVb1RsM=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122144205-a474a46a06c2/go.mod h1:hpX7IDQn7DRwPh6VDiGC3Oi5fh+t8PYt6YEuuF7OEfM=
 github.com/axiaoxin-com/goutils v1.0.3-0.20201019024427-66fe97b27be4 h1:+tyBjMo5+jWkvXUpxFAN5cWrPA5YktI7bKOESax3TO8=
 github.com/axiaoxin-com/goutils v1.0.3-0.20201019024427-66fe97b27be4/go.mod h1:ZuL0c9e5Nw6b6eirSmB9VaOeojiHS3BrmzGyKiKYLD0=
 github.com/axiaoxin-com/logging v0.0.0-20200427085200-a4c4130686e8 h1:RIuDiXQO37iUjRV7PNM57R7BK88UIqUZCn1gqg0gSX0=
@@ -46,6 +52,12 @@ github.com/axiaoxin-com/logging v1.2.7 h1:AmREhGLzB8evDDiXyvlmSkJ8yyawP8tpLC7nwP
 github.com/axiaoxin-com/logging v1.2.7/go.mod h1:Jx322YD47doa/j9kn3pNPntze8b9bOVxf3So0LmdRMg=
 github.com/axiaoxin-com/weibo v1.0.6-0.20201122133745-1658fe4f7be2 h1:11jKwNmOuLLgj/bGNRywNT/ggLrY9moNSky/CFF0Lgs=
 github.com/axiaoxin-com/weibo v1.0.6-0.20201122133745-1658fe4f7be2/go.mod h1:XJoZDBHfJkYgJVb0LcERxqU2HS3ly9xLpr3TxzxH36M=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201122142502-e5b7a0609044 h1:byMBhLZPx+w3ROiij0eJmnlK27B49uxcdLjkLcBqfU8=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201122142502-e5b7a0609044/go.mod h1:XJoZDBHfJkYgJVb0LcERxqU2HS3ly9xLpr3TxzxH36M=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201122142946-c3e07ff11892 h1:pZRJfEVxytCxfFQSJ8fzTmWha0/S3gG0j89id6iXRfA=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201122142946-c3e07ff11892/go.mod h1:XJoZDBHfJkYgJVb0LcERxqU2HS3ly9xLpr3TxzxH36M=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201122144128-176ef3c8fbd1 h1:DN+b/+MVFaGjGj+o144BBOPiKvEyVQ+mWGjBtGIwjWg=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201122144128-176ef3c8fbd1/go.mod h1:XJoZDBHfJkYgJVb0LcERxqU2HS3ly9xLpr3TxzxH36M=
 github.com/axiaoxin-com/wttrin v0.0.0-20200507062543-ae729320293f h1:WoWxlrz5N3ck2UbU2Ph2BdETuGgxlUeggomKTjzKhgY=
 github.com/axiaoxin-com/wttrin v0.0.0-20200507062543-ae729320293f/go.mod h1:RrJAl/+5i12BdOVjkF4x08voNrnnHPmbcj0/1gNdzwk=
 github.com/aymerick/raymond v2.0.3-0.20180322193309-b565731e1464+incompatible/go.mod h1:osfaiScAUVup+UC9Nfq76eWqDhXlp+4UYaA8uhTBO6g=
