@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/axiaoxin-com/chaojiying v1.0.0
-	github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122144205-a474a46a06c2
+	github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122145032-0ea306da7e20
 	github.com/axiaoxin-com/weibo v1.0.7-0.20201122144128-176ef3c8fbd1
 	github.com/axiaoxin-com/wttrin v0.0.0-20200507062543-ae729320293f
 	github.com/go-sql-driver/mysql v1.5.0

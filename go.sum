@@ -44,6 +44,8 @@ github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122143033-46d9d64d9faf h1:OVV4jU
 github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122143033-46d9d64d9faf/go.mod h1:Djk3pL6noT5lvixeB1/WDpHV4QqtkwaTZc+6WdJlzsU=
 github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122144205-a474a46a06c2 h1:0eNlWQMQGYzeopHn41diVOTGkdWh0AFvBg46cVb1RsM=
 github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122144205-a474a46a06c2/go.mod h1:hpX7IDQn7DRwPh6VDiGC3Oi5fh+t8PYt6YEuuF7OEfM=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122145032-0ea306da7e20 h1:Pd70oVdk/zUG0e17b4I9IR64wS+aDaVpOI+eDhGns/U=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201122145032-0ea306da7e20/go.mod h1:hpX7IDQn7DRwPh6VDiGC3Oi5fh+t8PYt6YEuuF7OEfM=
 github.com/axiaoxin-com/goutils v1.0.3-0.20201019024427-66fe97b27be4 h1:+tyBjMo5+jWkvXUpxFAN5cWrPA5YktI7bKOESax3TO8=
 github.com/axiaoxin-com/goutils v1.0.3-0.20201019024427-66fe97b27be4/go.mod h1:ZuL0c9e5Nw6b6eirSmB9VaOeojiHS3BrmzGyKiKYLD0=
 github.com/axiaoxin-com/logging v0.0.0-20200427085200-a4c4130686e8 h1:RIuDiXQO37iUjRV7PNM57R7BK88UIqUZCn1gqg0gSX0=
