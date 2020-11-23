@@ -38,6 +38,10 @@ github.com/axiaoxin-com/chaojiying v1.0.0 h1:WAQKdgGAEOwTICsntPhVao7ypkBNxTby08L
 github.com/axiaoxin-com/chaojiying v1.0.0/go.mod h1:BGqgy6Crn22Z4Lc0XnSrTGyItu9cWCj6qea6C4ShCHU=
 github.com/axiaoxin-com/cronweibo v1.0.4-0.20201123011709-c855a4f4d9a1 h1:VrC+cuNA54FBkfIaMdtDeMEtE1s5qHXa5a8stFUUIpM=
 github.com/axiaoxin-com/cronweibo v1.0.4-0.20201123011709-c855a4f4d9a1/go.mod h1:RzuSvI+nhOdzlzgweCT4grvVTI31vmq5O/gG65ROlGE=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201123021020-ba9d02d1fd98 h1:baEKAKHHGwNjEBIhkAkEy1Dkazt+kvFcoBv2NFI23Dk=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201123021020-ba9d02d1fd98/go.mod h1:RzuSvI+nhOdzlzgweCT4grvVTI31vmq5O/gG65ROlGE=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201123021950-a94ac63a0405 h1:6nudUkpaVT87ibbyQof4xw1Qboc1vHzl9db2G0uVcFk=
+github.com/axiaoxin-com/cronweibo v1.0.4-0.20201123021950-a94ac63a0405/go.mod h1:zeEYuOXfbeNFvyzw4VR1pbbC7wpPEd7NIQN2Q6Wt0Fk=
 github.com/axiaoxin-com/goutils v1.0.3-0.20201019024427-66fe97b27be4 h1:+tyBjMo5+jWkvXUpxFAN5cWrPA5YktI7bKOESax3TO8=
 github.com/axiaoxin-com/goutils v1.0.3-0.20201019024427-66fe97b27be4/go.mod h1:ZuL0c9e5Nw6b6eirSmB9VaOeojiHS3BrmzGyKiKYLD0=
 github.com/axiaoxin-com/logging v0.0.0-20200427085200-a4c4130686e8 h1:RIuDiXQO37iUjRV7PNM57R7BK88UIqUZCn1gqg0gSX0=
@@ -46,6 +50,8 @@ github.com/axiaoxin-com/logging v1.2.7 h1:AmREhGLzB8evDDiXyvlmSkJ8yyawP8tpLC7nwP
 github.com/axiaoxin-com/logging v1.2.7/go.mod h1:Jx322YD47doa/j9kn3pNPntze8b9bOVxf3So0LmdRMg=
 github.com/axiaoxin-com/weibo v1.0.7-0.20201123010947-195aab23ec4f h1:3rjNuQKFuLzWM5YKItJYgwqfObz7qkwZVWCZ0cw9kbY=
 github.com/axiaoxin-com/weibo v1.0.7-0.20201123010947-195aab23ec4f/go.mod h1:BT0JsLnAmDIYfRHqKdR3I0zVuZ2OomUNaEnAjkVD1tg=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201123021852-bcf4f185ff5c h1:DBwV84iuaFskUmTVMv2gq354nsM5yxTfgOgqaXAqFps=
+github.com/axiaoxin-com/weibo v1.0.7-0.20201123021852-bcf4f185ff5c/go.mod h1:BT0JsLnAmDIYfRHqKdR3I0zVuZ2OomUNaEnAjkVD1tg=
 github.com/axiaoxin-com/wttrin v0.0.0-20200507062543-ae729320293f h1:WoWxlrz5N3ck2UbU2Ph2BdETuGgxlUeggomKTjzKhgY=
 github.com/axiaoxin-com/wttrin v0.0.0-20200507062543-ae729320293f/go.mod h1:RrJAl/+5i12BdOVjkF4x08voNrnnHPmbcj0/1gNdzwk=
 github.com/aymerick/raymond v2.0.3-0.20180322193309-b565731e1464+incompatible/go.mod h1:osfaiScAUVup+UC9Nfq76eWqDhXlp+4UYaA8uhTBO6g=

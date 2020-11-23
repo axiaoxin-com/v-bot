@@ -51,6 +51,8 @@ func runWeiboClock(cracker *chaojiying.Client) {
 		BasicAuthUsername:  viper.GetString("weiboclock.basic_auth_username"),
 		BasicAuthPasswd:    viper.GetString("weiboclock.basic_auth_passwd"),
 		Location:           location,
+		RetryCount:         3,
+		RetryDuration:      time.Second * 2,
 	}
 	if cracker != nil {
 		wcCfg.WeiboPinCrackFuncs = []weibo.CrackPinFunc{cracker.Cr4ck}
@@ -96,6 +98,8 @@ func runReminder(cracker *chaojiying.Client) {
 		BasicAuthUsername:  viper.GetString("reminder.basic_auth_username"),
 		BasicAuthPasswd:    viper.GetString("reminder.basic_auth_passwd"),
 		Location:           location,
+		RetryCount:         3,
+		RetryDuration:      time.Second * 2,
 	}
 	if cracker != nil {
 		wcCfg.WeiboPinCrackFuncs = []weibo.CrackPinFunc{cracker.Cr4ck}
