@@ -11,7 +11,7 @@ import (
 var (
 	// TollTails 标点小尾巴
 	TollTails = []string{
-		"!", "~", ".", "?",
+		"！", "~", "。", "？",
 	}
 
 	// ClockEmoji 整点emoji

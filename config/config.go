@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
@@ -9,14 +8,14 @@ import (
 )
 
 // InitConfig 初始化配置
-func InitConfig(paths ...string) {
+func InitConfig(paths ...string) error {
 	processdir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
-		log.Fatal("[FATAL] get processdir error", err)
+		return err
 	}
 	workdir, err := os.Getwd()
 	if err != nil {
-		log.Fatal("[FATAL] get workdir error", err)
+		return err
 	}
 
 	viper.SetConfigName("config")
@@ -26,7 +25,5 @@ func InitConfig(paths ...string) {
 		viper.AddConfigPath(p)
 	}
 
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal("[FATAL] viper ReadInConfig error", err)
-	}
+	return viper.ReadInConfig()
 }

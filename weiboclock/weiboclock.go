@@ -3,9 +3,8 @@
 package weiboclock
 
 import (
-	"log"
-
 	"github.com/axiaoxin-com/cronweibo"
+	"github.com/axiaoxin-com/logging"
 )
 
 // WeiboClock 实例对象
@@ -32,9 +31,9 @@ func New(cfg *cronweibo.Config) (*WeiboClock, error) {
 func (clock *WeiboClock) Run() {
 	// 初始化微博表情，失败不影响服务
 	if count, err := clock.InitEmotions(); err != nil {
-		log.Println("[ERROR] weiboclock InitEmotions error", err)
+		logging.Warn(nil, "weiboclock InitEmotions error:"+err.Error())
 	} else {
-		log.Println("[DEBUG] weiboclock InitEmotions count:", count)
+		logging.Debugf(nil, "weiboclock InitEmotions count:%d", count)
 	}
 
 	// 注册微博报时任务

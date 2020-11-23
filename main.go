@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 	"v-bot/config"
 	"v-bot/reminder"
@@ -10,11 +9,13 @@ import (
 
 	"github.com/axiaoxin-com/chaojiying"
 	"github.com/axiaoxin-com/cronweibo"
+	"github.com/axiaoxin-com/logging"
 	"github.com/axiaoxin-com/weibo"
 	"github.com/spf13/viper"
 )
 
 const (
+	// DefaultTimezone 时区
 	DefaultTimezone = "Asia/Shanghai"
 )
 
@@ -36,7 +37,6 @@ func runWeiboClock(cracker *chaojiying.Client) {
 	if tusername != "" && tpasswd != "" {
 		username = tusername
 		passwd = tpasswd
-		log.Println("[WARN] weiboClock will run with test account")
 	}
 	wcCfg := &cronweibo.Config{
 		AppName:            "WeiboClock",
@@ -73,7 +73,7 @@ func runReminder(cracker *chaojiying.Client) {
 	}
 	location, err := time.LoadLocation(timezone)
 	if err != nil {
-		log.Fatalln("[FATAL] Load location error:", err)
+		panic(err)
 	}
 	username := viper.GetString("reminder.username")
 	passwd := viper.GetString("reminder.passwd")
@@ -82,7 +82,6 @@ func runReminder(cracker *chaojiying.Client) {
 	if tusername != "" && tpasswd != "" {
 		username = tusername
 		passwd = tpasswd
-		log.Println("[WARN] reminder will run with test account")
 	}
 	wcCfg := &cronweibo.Config{
 		AppName:            "Reminder",
@@ -117,15 +116,14 @@ func cracker() *chaojiying.Client {
 	if accountsJSONPath != "" {
 		accounts, err := chaojiying.LoadAccountsFromJSONFile(accountsJSONPath)
 		if err != nil {
-			log.Println("[ERROR] Load chaojiying accounts error:", err)
+			logging.Error(nil, "Load chaojiying accounts error:"+err.Error())
 		}
 		cracker, err := chaojiying.New(accounts)
 		if err != nil {
-			log.Println("[ERROR] New chaojiying cracker error:", err)
+			logging.Error(nil, "New chaojiying cracker error:"+err.Error())
 		}
 		return cracker
 	}
-	log.Println("[DEBUG] no chaojiying accounts_json_path")
 	return nil
 }
 
@@ -136,8 +134,9 @@ func main() {
 			select {}
 		}
 	}()
-	config.InitConfig()
-	log.Println("[INFO] v-bot inited config.")
+	if err := config.InitConfig(); err != nil {
+		panic("InitConfig:" + err.Error())
+	}
 	c := cracker()
 	go runWeiboClock(c)
 	go runReminder(c)
