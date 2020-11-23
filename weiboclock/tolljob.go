@@ -54,7 +54,7 @@ func (clock *WeiboClock) tollRun() (string, io.Reader) {
 
 	text := fmt.Sprintf("%s %d 点啦%s %s\n\n"+
 		"你的今日使用进度:\n%s\n\n"+
-		"%s"+
+		"%s\n"+
 		"%s",
 		ClockEmoji[oclock], oclock, TollTail(1), emotion,
 		dayProcessBar,
